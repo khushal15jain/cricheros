@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUCTION LIVE BROADCAST</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --neon-gold: #FFD700;
+            --neon-cyan: #00FFFF;
+            --neon-green: #00FF88;
+            --neon-red: #FF3366;
+            --bg-dark: #020408;
+            --bg-card: #080C16;
+            --border: rgba(0, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* Responsive Layout Container */
+        .broadcast-container {
+            width: 100%;
+            min-height: 100vh;
+            background: #000;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(191, 95, 255, 0.05) 0%, transparent 50%);
+        }
+
+        /* Header */
+        .broadcast-header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid var(--border);
+            z-index: 10;
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--neon-gold);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .logo span {
+            color: var(--neon-cyan);
+        }
+
+        .live-tag {
+            background: var(--neon-red);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Mobile Sponsor Bar (Visible only on Mobile at top) */
+        .mobile-sponsor-bar {
+            display: none;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 2px solid var(--neon-gold);
+            justify-content: center;
+            gap: 20px;
+            overflow-x: auto;
+        }
+
+        .mobile-sponsor-bar img {
+            max-height: 50px;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+        }
+
+        /* Main Content */
+        .broadcast-main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            padding: 40px;
+            gap: 40px;
+            align-items: center;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Player Side */
+        .player-visual {
+            text-align: center;
+        }
+
+        .player-photo-wrap {
+            width: 100%;
+            max-width: 450px;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #0A1020, #0F1730);
+            border: 4px solid var(--border);
+            border-radius: 30px;
+            margin: 0 auto;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
+            position: relative;
+        }
+
+        .player-photo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .player-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            font-weight: 900;
+            margin-top: 20px;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .player-meta {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--neon-gold);
+        }
+
+        /* Bid Side */
+        .bid-info {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .current-bid-val {
+            font-family: 'Orbitron', monospace;
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--neon-green);
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .bidder-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+            background: rgba(0, 255, 255, 0.1);
+            padding: 12px 24px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        /* Footer */
+        .broadcast-footer {
+            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sponsor-list {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .sponsor-item img {
+            max-height: 80px;
+            max-width: 200px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.6));
+            animation: logo-glow 3s infinite alternate;
+        }
+
+        @keyframes logo-glow {
+            from { filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4)); }
+            to { filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.8)); }
+        }
+
+        .stats-grid {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-val {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+        }
+
+        .stat-lbl {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 900px) {
+            .broadcast-main {
+                grid-template-columns: 1fr;
+                padding: 20px;
+                gap: 20px;
+            }
+
+            .broadcast-header {
+                padding: 15px 20px;
+            }
+
+            .player-photo-wrap {
+                max-width: 300px;
+            }
+
+            .player-name {
+                font-size: 2rem;
+            }
+
+            .bid-info {
+                padding: 30px 20px;
+            }
+
+            .current-bid-val {
+                font-size: 3rem;
+            }
+
+            .broadcast-footer {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .mobile-sponsor-bar {
+                display: flex;
+            }
+
+            .desktop-sponsors {
+                display: none;
+            }
+        }
+
+        /* Status Overlay */
+        .status-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .status-text {
+            font-family: 'Orbitron', monospace;
+            font-size: 5rem;
+            font-weight: 900;
+        }
+
+        .sold-color {
+            color: var(--neon-gold);
+            text-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
+        }
+
+        .unsold-color {
+            color: var(--neon-red);
+            text-shadow: 0 0 40px rgba(255, 51, 102, 0.5);
+        }
+
+        /* Results Screen */
+        .results-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-dark);
+            z-index: 300;
+            display: none;
+            flex-direction: column;
+            padding: 40px;
+            overflow-y: auto;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .results-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 3.5rem;
+            color: var(--neon-gold);
+            text-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
+            letter-spacing: 5px;
+            margin-bottom: 15px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow: hidden;
+        }
+
+        .rc-team-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .results-overlay {
+            padding: 20px;
+            padding-bottom: 100px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-cyan) transparent;
+        }
+
+        .rc-logo { width: 60px; height: 60px; object-fit: contain; }
+        .rc-name { font-family: 'Orbitron', monospace; font-size: 1.4rem; color: var(--neon-cyan); }
+        .rc-spent { font-family: 'Rajdhani', sans-serif; font-size: 1rem; color: var(--neon-gold); font-weight: 700; }
+
+        .rc-player-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .rc-player {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .rc-player .p-price { color: var(--neon-green); font-family: 'Orbitron', monospace; }
+
+        /* Results Sponsors */
+        .results-sponsor-bar {
+            margin-top: 60px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .rs-grid {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .rs-logo {
+            max-height: 70px;
+            max-width: 180px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.4));
+        }
+
+        @media (max-width: 768px) {
+            .results-title { font-size: 2rem; }
+            .results-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="broadcast-container">
+        <!-- Waiting State -->
+        <div id="wait-overlay"
+            style="position:fixed; inset:0; background:var(--bg-dark); z-index:200; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px;">
+            <div class="logo" style="font-size:3rem;">IPL <span>AUCTION</span></div>
+            <div style="font-family:'Rajdhani'; color:var(--neon-cyan); letter-spacing:4px;">WAITING FOR LIVE DATA...
+            </div>
+        </div>
+
+        <div class="status-overlay" id="status-overlay">
+            <div class="status-text" id="status-text">SOLD!</div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-overlay" id="results-overlay">
+            <div class="results-header">
+                <div class="logo" style="margin-bottom:10px;">IPL <span>AUCTION</span></div>
+                <h1 class="results-title">AUCTION SUMMARY</h1>
+                <div style="font-family:'Rajdhani'; color:var(--text-muted); letter-spacing:4px;">FINAL TEAM COMPOSITIONS</div>
+            </div>
+            <div class="results-grid" id="results-grid-container"></div>
+            
+            <!-- Sponsors in Results -->
+            <div class="results-sponsor-bar" id="results-sponsor-bar" style="display:none;">
+                <div style="font-family:'Rajdhani'; font-size:0.9rem; color:var(--neon-gold); letter-spacing:5px; font-weight:700;">OFFICIAL PARTNERS</div>
+                <div class="rs-grid" id="rs-grid-container"></div>
+            </div>
+
+            <div style="text-align:center; margin-top:60px; padding-bottom:60px;">
+                <button onclick="location.reload()" style="background:none; border:1px solid var(--border); color:var(--text-muted); padding:10px 30px; border-radius:100px; cursor:pointer; font-family:'Orbitron'; font-size:0.8rem;">REFRESH</button>
+            </div>
+        </div>
+
+        <div class="broadcast-header">
+            <div class="logo">IPL <span>AUCTION</span></div>
+            <div class="live-tag">LIVE</div>
+        </div>
+
+        <!-- Sponsors at Top for Mobile -->
+        <div class="mobile-sponsor-bar" id="mobile-sponsors"></div>
+
+        <main class="broadcast-main">
+            <div class="player-visual">
+                <div class="player-photo-wrap" id="player-photo">🏏</div>
+                <div class="player-info">
+                    <h2 class="player-name" id="player-name">READY...</h2>
+                    <p class="player-meta" id="player-meta">AUCTION STARTING SOON</p>
+                </div>
+            </div>
+
+            <div class="bid-info">
+                <div style="font-size:0.8rem; color:var(--neon-gold); letter-spacing:3px;">CURRENT BID</div>
+                <div class="current-bid-val" id="current-bid">₹ 0.00 Cr</div>
+                <div id="bidder-name" class="bidder-name">NO BIDS</div>
+                <div style="margin-top:20px;">
+                    <div style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px;">AUCTION TIMER</div>
+                    <div style="font-family:'Orbitron'; font-size:2rem; color:var(--neon-red);" id="timer">30</div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="broadcast-footer">
+            <div class="desktop-sponsors">
+                <div style="font-size:0.8rem; color:var(--neon-gold); letter-spacing:4px; margin-bottom:12px; font-weight:700; text-transform:uppercase;">
+                    OFFICIAL PARTNERS
+                </div>
+                <div class="sponsor-list" id="footer-sponsors"></div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-lbl">Remaining</div>
+                    <div class="stat-val" id="rem-players">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-lbl">Sold</div>
+                    <div class="stat-val" id="sold-players" style="color:var(--neon-gold)">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-lbl">Total</div>
+                    <div class="stat-val" id="total-players" style="color:var(--neon-gold)">0</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const ui = {
+            wait: document.getElementById('wait-overlay'),
+            status: document.getElementById('status-overlay'),
+            statusText: document.getElementById('status-text'),
+            playerName: document.getElementById('player-name'),
+            playerMeta: document.getElementById('player-meta'),
+            playerPhoto: document.getElementById('player-photo'),
+            currentBid: document.getElementById('current-bid'),
+            bidderName: document.getElementById('bidder-name'),
+            timer: document.getElementById('timer'),
+            footerSponsors: document.getElementById('footer-sponsors'),
+            mobileSponsors: document.getElementById('mobile-sponsors'),
+            totalPlayers: document.getElementById('total-players'),
+            remPlayers: document.getElementById('rem-players'),
+            soldPlayers: document.getElementById('sold-players')
+        };
+
+        function updateUI(state) {
+            if (!state) return;
+            ui.wait.style.display = 'none';
+
+            if (state.player) {
+                ui.playerName.textContent = state.player.name;
+                ui.playerMeta.textContent = `${state.player.role.toUpperCase()} | BASE: ₹${state.player.base}Cr`;
+                if (state.player.photo) {
+                    ui.playerPhoto.innerHTML = `<img src="${state.player.photo}" alt="${state.player.name}">`;
+                } else {
+                    ui.playerPhoto.textContent = '🏏';
+                }
+            }
+
+            ui.currentBid.textContent = `₹${state.currentBid.toFixed(2)}Cr`;
+            ui.bidderName.textContent = state.currentBidder || 'NO BIDS';
+            ui.timer.textContent = state.countdown;
+            ui.totalPlayers.textContent = state.total;
+            ui.remPlayers.textContent = state.remaining;
+            ui.soldPlayers.textContent = state.soldCount;
+
+            // Sponsors (Static List in Footer)
+            if (state.sponsors && state.sponsors.length > 0) {
+                const sponsorHtml = state.sponsors.filter(s => s).map(s => `<div class="sponsor-item"><img src="${s}" alt="Sponsor"></div>`).join('');
+                ui.footerSponsors.innerHTML = sponsorHtml;
+                ui.mobileSponsors.innerHTML = sponsorHtml;
+            }
+
+            // Sync color logic for timer
+            ui.timer.style.color = state.countdown <= 10 ? 'var(--neon-red)' : 'var(--neon-gold)';
+
+            // Overlays
+            if (state.event === 'sold') {
+                ui.status.style.display = 'flex';
+                ui.statusText.textContent = 'SOLD!';
+                ui.statusText.className = 'status-text sold-color';
+            } else if (state.event === 'unsold') {
+                ui.status.style.display = 'flex';
+                ui.statusText.textContent = 'UNSOLD';
+                ui.statusText.className = 'status-text unsold-color';
+            } else if (state.event === 'finished' && state.teams) {
+                renderBroadcastResults(state.teams, state.sponsors);
+            } else {
+                ui.status.style.display = 'none';
+            }
+        }
+
+        function renderBroadcastResults(teams, sponsors) {
+            const overlay = document.getElementById('results-overlay');
+            const grid = document.getElementById('results-grid-container');
+            const sponsorBar = document.getElementById('results-sponsor-bar');
+            const rsContainer = document.getElementById('rs-grid-container');
+            overlay.style.display = 'flex';
+
+            grid.innerHTML = teams.map(t => `
+                <div class="result-card">
+                    <div class="rc-team-header">
+                        ${t.logo ? `<img class="rc-logo" src="${t.logo}">` : `<div style="font-size:2rem;">🏏</div>`}
+                        <div>
+                            <div class="rc-name">${t.name}</div>
+                            <div class="rc-spent">₹${t.spent.toFixed(2)}Cr Spent</div>
+                        </div>
+                    </div>
+                    <div class="rc-player-list">
+                        ${t.players.map(p => `
+                            <div class="rc-player">
+                                <span>${p.name} <small style="color:var(--text-muted)">(${p.role})</small></span>
+                                <span class="p-price">₹${p.price?.toFixed(2) || '0'}Cr</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Sponsors in Results
+            if (sponsors && sponsors.length > 0) {
+                const validSponsors = sponsors.filter(s => s);
+                if (validSponsors.length > 0) {
+                    rsContainer.innerHTML = validSponsors.map(s => `<img class="rs-logo" src="${s}">`).join('');
+                    sponsorBar.style.display = 'block';
+                }
+            }
+        }
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'ipa_live_sync' && e.newValue) {
+                try { updateUI(JSON.parse(e.newValue)); } catch (err) { }
+            }
+        });
+
+        const initial = localStorage.getItem('ipa_live_sync');
+        if (initial) try { updateUI(JSON.parse(initial)); } catch (e) { }
+    </script>
+</body>
+
+</html>
