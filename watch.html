@@ -91,8 +91,10 @@
             background: rgba(255, 255, 255, 0.05);
             border-bottom: 2px solid var(--neon-gold);
             justify-content: center;
+            align-items: center;
             gap: 20px;
             overflow-x: auto;
+            flex-direction: row;
         }
 
         .mobile-sponsor-bar img {
@@ -196,6 +198,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .sponsor-list {
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            align-items: center;
+            flex-wrap: nowrap;
         }
 
         .sponsor-item {

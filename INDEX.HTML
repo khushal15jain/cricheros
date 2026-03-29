@@ -997,7 +997,7 @@
     }
 
     .premium-sponsor-card::before {
-      content: 'ASSOCIATE';
+      content: 'SPONSORS';
       position: absolute;
       top: -10px;
       left: 50%;
@@ -2455,19 +2455,29 @@
           </span>
         </div>
       </div>
-      <div class="form-group">
-        <label>Captain Name</label>
-        <input type="text" id="captain-name" placeholder="e.g. Rohit Sharma">
+      <div class="two-col">
+        <div class="form-group">
+          <label>Captain Name</label>
+          <input type="text" id="captain-name" placeholder="e.g. Rohit Sharma">
+        </div>
+        <div class="form-group" style="width:120px;">
+          <label>Age</label>
+          <input type="number" id="captain-age" min="16" max="60" placeholder="32">
+        </div>
       </div>
       <div class="two-col">
         <div class="form-group">
           <label>Retained Player (optional)</label>
           <input type="text" id="retained-player" placeholder="e.g. Jasprit Bumrah">
         </div>
-        <div class="form-group">
-          <label>Max Players</label>
-          <input type="number" id="team-max-players" value="15" min="1" max="30">
+        <div class="form-group" style="width:120px;">
+          <label>Age</label>
+          <input type="number" id="retained-age" min="16" max="60" placeholder="30">
         </div>
+      </div>
+      <div class="form-group">
+        <label>Max Players</label>
+        <input type="number" id="team-max-players" value="15" min="1" max="30">
       </div>
       <div style="margin-top:4px;">
         <button class="btn btn-gold btn-full" onclick="addTeam()">✓ ADD TEAM</button>
@@ -2628,13 +2638,14 @@
         const maxTeams = parseInt(document.getElementById('num-teams').value) || 8;
         data.forEach(row => {
           if (teams.length >= maxTeams) return;
-          const name = row.name || row.TeamName || row.Team;
-          if (!name) return;
+          const name = (r['Team Name'] || r['name'] || '').trim();
+          const captain = (r['Captain Name'] || r['captain'] || '').trim();
+          const captainAge = (r['Captain Age'] || r['captain_age'] || '').trim();
+          const retained = (r['Retained Player'] || r['retained'] || '').trim();
+          const retainedAge = (r['Retained Age'] || r['retained_age'] || '').trim();
+          const maxPlayers = parseInt(r['Max Players'] || r['max_players']) || 15;
 
-          const captain = row.captain || row.Captain || '';
-          const maxPlayers = parseInt(row.maxPlayers || row.MaxPlayers) || 6;
-          const purse = parseFloat(row.purse || row.Purse) || parseFloat(document.getElementById('purse-amount').value) || 100;
-          const retained = row.retained || row.Retained || '';
+          if (!name) return;
 
           const emojis = ['🦁', '🐯', '🦅', '🐉', '🦊', '🦁', '⚡', '🔥', '🌊', '💎', '🏆', '⭐'];
           const newTeam = {
@@ -2643,17 +2654,19 @@
             logo: null,
             emoji: emojis[teams.length % emojis.length],
             captain,
+            captainAge,
             retained,
+            retainedAge,
             maxPlayers,
             players: [],
-            purse,
+            purse: parseFloat(document.getElementById('purse-amount').value) || 100,
             spent: 0,
           };
-          if (retained) {
-            newTeam.players.push({ name: retained, role: 'Player', age: '—', price: 0, retained: true });
-          }
           if (captain) {
-            newTeam.players.push({ name: captain, role: 'Captain', age: '—', price: 0, retained: true, isCaptain: true });
+            newTeam.players.push({ name: captain, role: 'Captain', age: captainAge || '—', price: 0, retained: true, isCaptain: true });
+          }
+          if (retained && (retained !== captain)) {
+            newTeam.players.push({ name: retained, role: 'Player', age: retainedAge || '—', price: 0, retained: true });
           }
           teams.push(newTeam);
           addedCount++;
@@ -2820,7 +2833,9 @@
       editingTeamIdx = -1;
       document.getElementById('team-name').value = '';
       document.getElementById('captain-name').value = '';
+      document.getElementById('captain-age').value = '';
       document.getElementById('retained-player').value = '';
+      document.getElementById('retained-age').value = '';
       document.getElementById('team-max-players').value = '15';
       document.getElementById('team-logo-input').value = '';
       document.getElementById('team-logo-preview-wrap').innerHTML = '<span style="font-size:2rem;">🏏</span><p>Click to upload team logo (optional)</p>';
@@ -2835,8 +2850,10 @@
       editingTeamIdx = idx;
       document.getElementById('team-name').value = t.name;
       document.getElementById('captain-name').value = t.captain || '';
+      document.getElementById('captain-age').value = t.captainAge || '';
       document.getElementById('retained-player').value = t.retained || '';
-      document.getElementById('team-max-players').value = t.maxPlayers || 6;
+      document.getElementById('retained-age').value = t.retainedAge || '';
+      document.getElementById('team-max-players').value = t.maxPlayers || 15;
       teamLogoData = t.logo;
       if (teamLogoData) {
         document.getElementById('team-logo-preview-wrap').innerHTML = `<img src="${teamLogoData}" class="preview-img" alt="logo">`;
@@ -2884,8 +2901,10 @@
     function addTeam() {
       const name = document.getElementById('team-name').value.trim();
       const captain = document.getElementById('captain-name').value.trim();
+      const captainAge = document.getElementById('captain-age').value.trim();
       const retained = document.getElementById('retained-player').value.trim();
-      const maxPlayers = parseInt(document.getElementById('team-max-players').value) || 6;
+      const retainedAge = document.getElementById('retained-age').value.trim();
+      const maxPlayers = parseInt(document.getElementById('team-max-players').value) || 15;
       if (!name) { showToast('Team name is required!', 'error'); return; }
 
       const emojis = ['🦁', '🐯', '🦅', '🐉', '🦊', '🦁', '⚡', '🔥', '🌊', '💎', '🏆', '⭐'];
@@ -2894,17 +2913,19 @@
         const t = teams[editingTeamIdx];
         t.name = name;
         t.captain = captain;
+        t.captainAge = captainAge;
         t.retained = retained;
+        t.retainedAge = retainedAge;
         t.maxPlayers = maxPlayers;
         t.logo = teamLogoData;
 
         // Sync Captain and Retained Player in the squad
         const currentPlayers = [];
         if (captain) {
-          currentPlayers.push({ name: captain, role: 'Captain', age: '—', price: 0, retained: true, isCaptain: true });
+          currentPlayers.push({ name: captain, role: 'Captain', age: captainAge || '—', price: 0, retained: true, isCaptain: true });
         }
         if (retained && (retained !== captain)) {
-          currentPlayers.push({ name: retained, role: 'Player', age: '—', price: 0, retained: true });
+          currentPlayers.push({ name: retained, role: 'Player', age: retainedAge || '—', price: 0, retained: true });
         }
 
         // Keep existing non-retained players
@@ -2919,7 +2940,9 @@
           logo: teamLogoData,
           emoji: emojis[teams.length % emojis.length],
           captain,
+          captainAge,
           retained,
+          retainedAge,
           maxPlayers,
           players: [],
           purse: parseFloat(document.getElementById('purse-amount').value) || 100,
@@ -2927,10 +2950,10 @@
         };
 
         if (captain) {
-          newTeam.players.push({ name: captain, role: 'Captain', age: '—', price: 0, retained: true, isCaptain: true });
+          newTeam.players.push({ name: captain, role: 'Captain', age: captainAge || '—', price: 0, retained: true, isCaptain: true });
         }
         if (retained && (retained !== captain)) {
-          newTeam.players.push({ name: retained, role: 'Player', age: '—', price: 0, retained: true });
+          newTeam.players.push({ name: retained, role: 'Player', age: retainedAge || '—', price: 0, retained: true });
         }
 
         teams.push(newTeam);
@@ -3249,9 +3272,8 @@
         // Increment and show next
         currentSponsorIdx = (currentSponsorIdx + 1) % validIndices.length;
         const actualIdx = validIndices[currentSponsorIdx];
-
         logo.innerHTML = `<img src="${sponsors[actualIdx]}" alt="Sponsor">`;
-        if (tag) tag.textContent = labels[actualIdx] || 'ASSOCIATE SPONSOR';
+        if (tag) tag.textContent = labels[actualIdx] || 'SPONSORS';
 
         card.classList.remove('fade-out');
         card.style.display = 'flex';
