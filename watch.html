@@ -479,6 +479,30 @@
             <div class="status-text" id="status-text">SOLD!</div>
         </div>
 
+        <!-- Next Player Waiting Screen -->
+        <div id="next-player-overlay"
+            style="position:fixed; inset:0; background:rgba(2, 4, 8, 0.95); z-index:150; display:none; flex-direction:column; align-items:center; justify-content:center; gap:30px; backdrop-filter:blur(20px);">
+            <div class="logo" style="font-size:3rem; animation: pulse 2s infinite;">IPL <span>AUCTION</span></div>
+            <div style="text-align:center;">
+                <div style="font-family:'Orbitron'; color:var(--neon-gold); font-size:2.5rem; font-weight:900; letter-spacing:8px;">NEXT PLAYER</div>
+                <div style="font-family:'Rajdhani'; color:var(--neon-cyan); font-size:1.2rem; letter-spacing:4px; margin-top:10px;">PREPARING FOR NEXT ROUND...</div>
+            </div>
+            <div class="loading-bar-container" style="width:300px; height:4px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden; margin-top:20px;">
+                <div class="loading-bar-fill" style="width:100%; height:100%; background:var(--neon-gold); animation: loading-slide 3s infinite linear;"></div>
+            </div>
+        </div>
+
+        <style>
+            @keyframes loading-slide {
+                0% { transform: translateX(-100%); }
+                100% { transform: translateX(100%); }
+            }
+            @keyframes pulse {
+                0%, 100% { opacity: 1; transform: scale(1); }
+                50% { opacity: 0.8; transform: scale(1.05); }
+            }
+        </style>
+
         <!-- Results Screen -->
         <div class="results-overlay" id="results-overlay">
             <div class="results-header">
@@ -555,6 +579,7 @@
     <script>
         const ui = {
             wait: document.getElementById('wait-overlay'),
+            nextPlayerOverlay: document.getElementById('next-player-overlay'),
             status: document.getElementById('status-overlay'),
             statusText: document.getElementById('status-text'),
             playerName: document.getElementById('player-name'),
@@ -572,7 +597,16 @@
 
         function updateUI(state) {
             if (!state) return;
-            ui.wait.style.display = 'none';
+            
+            // Handle Waiting for next player
+            if (state.event === 'waiting') {
+                ui.nextPlayerOverlay.style.display = 'flex';
+                ui.wait.style.display = 'none';
+                ui.status.style.display = 'none';
+            } else {
+                ui.nextPlayerOverlay.style.display = 'none';
+                ui.wait.style.display = 'none';
+            }
 
             if (state.player) {
                 ui.playerName.textContent = state.player.name;

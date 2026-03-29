@@ -2638,12 +2638,13 @@
         const maxTeams = parseInt(document.getElementById('num-teams').value) || 8;
         data.forEach(row => {
           if (teams.length >= maxTeams) return;
-          const name = (r['Team Name'] || r['name'] || '').trim();
-          const captain = (r['Captain Name'] || r['captain'] || '').trim();
-          const captainAge = (r['Captain Age'] || r['captain_age'] || '').trim();
-          const retained = (r['Retained Player'] || r['retained'] || '').trim();
-          const retainedAge = (r['Retained Age'] || r['retained_age'] || '').trim();
-          const maxPlayers = parseInt(r['Max Players'] || r['max_players']) || 15;
+          const name = (row['Team Name'] || row['name'] || row['Team'] || '').trim();
+          const captain = (row['Captain Name'] || row['captain'] || row['Captain'] || '').trim();
+          const captainAge = (row['Captain Age'] || row['captain_age'] || '').trim();
+          const retained = (row['Retained Player'] || row['retained'] || '').trim();
+          const retainedAge = (row['Retained Age'] || row['retained_age'] || '').trim();
+          const maxPlayers = parseInt(row['Max Players'] || row['max_players'] || row['MaxPlayers']) || 15;
+          const logo = (row['Logo'] || row['logo'] || row['Image'] || row['logo_filename'] || row['image_filename'] || '').trim();
 
           if (!name) return;
 
@@ -2651,7 +2652,7 @@
           const newTeam = {
             id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
             name,
-            logo: null,
+            logo: logo || null,
             emoji: emojis[teams.length % emojis.length],
             captain,
             captainAge,
@@ -2678,9 +2679,10 @@
           const name = row.name || row.Name || row.Player;
           if (!name) return;
 
-          const role = row.role || row.Role || 'Batsman';
+          const role = row.role || row.Role || row.Position || 'Batsman';
           const age = parseInt(row.age || row.Age) || 25;
-          const base = parseFloat(row.base || row.BasePrice || row.Base) || 1.0;
+          const base = parseFloat(row.base || row.BasePrice || row.Base || row.Price) || 1.0;
+          const photo = (row.photo || row.Photo || row.Image || row.Img || row.image_filename || row.photo_filename || '').trim();
 
           newAuctionPlayers.push({
             id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
@@ -2688,7 +2690,7 @@
             role,
             age,
             base,
-            photo: null
+            photo: photo || null
           });
           addedCount++;
         });
@@ -3235,6 +3237,8 @@
       currentSponsorIdx = -1; // Start before first so first call shows index 0
       clearInterval(sponsorToggleInterval);
       if (auction.sponsors && auction.sponsors.some(s => s)) {
+        // Ensure card is visible before first update
+        document.getElementById('premium-sponsor-card').style.display = 'flex';
         updatePremiumSponsor();
         sponsorToggleInterval = setInterval(updatePremiumSponsor, 5000);
       } else {
@@ -3277,6 +3281,8 @@
 
         card.classList.remove('fade-out');
         card.style.display = 'flex';
+        // Broadcast sync
+        if (currentAuction) syncLiveState();
       }, 500);
     }
 
@@ -3568,6 +3574,8 @@
         document.getElementById('reset-bid-btn').style.display = 'none';
         document.getElementById('sold-btn').style.display = 'none';
         teams.forEach((_, i) => { const b = document.getElementById(`bid-btn-${i}`); if (b) b.disabled = true; });
+        // Set broadcast to waiting
+        syncLiveState('waiting');
       }, 2500);
 
       // Sync
@@ -3614,6 +3622,8 @@
         document.getElementById('reset-bid-btn').style.display = 'none';
         document.getElementById('sold-btn').style.display = 'none';
         teams.forEach((_, i) => { const b = document.getElementById(`bid-btn-${i}`); if (b) b.disabled = true; });
+        // Set broadcast to waiting
+        syncLiveState('waiting');
       }, 2800);
 
       updateAuctionInDB();
