@@ -198,10 +198,11 @@
             align-items: center;
         }
 
-        .sponsor-list {
+        .sponsor-item {
             display: flex;
-            gap: 40px;
+            flex-direction: column;
             align-items: center;
+            gap: 8px;
         }
 
         .sponsor-item img {
@@ -210,6 +211,18 @@
             object-fit: contain;
             filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.6));
             animation: logo-glow 3s infinite alternate;
+        }
+
+        .sponsor-role-tag {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.6rem;
+            color: var(--neon-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: rgba(255, 215, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
         }
 
         @keyframes logo-glow {
@@ -419,6 +432,21 @@
             filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.4));
         }
 
+        .rs-logo-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rs-role {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            color: var(--neon-gold);
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
         @media (max-width: 768px) {
             .results-title { font-size: 2rem; }
             .results-grid { grid-template-columns: 1fr; }
@@ -555,7 +583,16 @@
 
             // Sponsors (Static List in Footer)
             if (state.sponsors && state.sponsors.length > 0) {
-                const sponsorHtml = state.sponsors.filter(s => s).map(s => `<div class="sponsor-item"><img src="${s}" alt="Sponsor"></div>`).join('');
+                const labels = ['CUP SPONSOR', 'AUCTION SPONSOR', 'LED SPONSOR'];
+                const sponsorHtml = state.sponsors.map((s, idx) => {
+                   if(!s) return '';
+                   return `
+                     <div class="sponsor-item">
+                       <span class="sponsor-role-tag">${labels[idx] || 'ASSOCIATE'}</span>
+                       <img src="${s}" alt="Sponsor">
+                     </div>
+                   `;
+                }).join('');
                 ui.footerSponsors.innerHTML = sponsorHtml;
                 ui.mobileSponsors.innerHTML = sponsorHtml;
             }
@@ -608,9 +645,19 @@
 
             // Render Sponsors in Results
             if (sponsors && sponsors.length > 0) {
-                const validSponsors = sponsors.filter(s => s);
-                if (validSponsors.length > 0) {
-                    rsContainer.innerHTML = validSponsors.map(s => `<img class="rs-logo" src="${s}">`).join('');
+                const labels = ['CUP SPONSOR', 'AUCTION SPONSOR', 'LED SPONSOR'];
+                const html = sponsors.map((s, idx) => {
+                   if(!s) return '';
+                   return `
+                     <div class="rs-logo-wrap">
+                        <div class="rs-role">${labels[idx]}</div>
+                        <img class="rs-logo" src="${s}">
+                     </div>
+                   `;
+                }).join('');
+                
+                if (html.trim()) {
+                    rsContainer.innerHTML = html;
                     sponsorBar.style.display = 'block';
                 }
             }
