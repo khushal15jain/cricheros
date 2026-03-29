@@ -310,6 +310,25 @@
       border-color: var(--neon-cyan);
     }
 
+    .team-bid-row.highest {
+      background: rgba(0, 255, 136, 0.1);
+      border-color: var(--neon-green);
+    }
+
+    .team-bid-row.team-full {
+      opacity: 0.6;
+      border-color: var(--border);
+    }
+
+    .team-full-tag {
+      background: var(--neon-red);
+      color: white;
+      font-size: 0.6rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+
     .btn-csv {
       background: linear-gradient(135deg, #2ecc71, #27ae60);
       color: #fff;
@@ -2633,6 +2652,9 @@
           if (retained) {
             newTeam.players.push({ name: retained, role: 'Player', age: '—', price: 0, retained: true });
           }
+          if (captain) {
+            newTeam.players.push({ name: captain, role: 'Captain', age: '—', price: 0, retained: true, isCaptain: true });
+          }
           teams.push(newTeam);
           addedCount++;
         });
@@ -2709,8 +2731,10 @@
 
     // ==================== AUTH ====================
     function switchTab(tab) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
+      const btns = document.querySelectorAll('.tab-btn');
+      btns.forEach(b => {
+        b.classList.toggle('active', b.innerText.toLowerCase() === tab.toLowerCase());
+      });
       document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
       document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
     }
@@ -2873,17 +2897,20 @@
         t.retained = retained;
         t.maxPlayers = maxPlayers;
         t.logo = teamLogoData;
-        // Update retained player if changed
-        if (retained) {
-          const existingRetained = t.players.find(p => p.retained);
-          if (existingRetained) {
-            existingRetained.name = retained;
-          } else {
-            t.players.push({ name: retained, role: 'Player', age: '—', price: 0, retained: true });
-          }
-        } else {
-          t.players = t.players.filter(p => !p.retained);
+
+        // Sync Captain and Retained Player in the squad
+        const currentPlayers = [];
+        if (captain) {
+          currentPlayers.push({ name: captain, role: 'Captain', age: '—', price: 0, retained: true, isCaptain: true });
         }
+        if (retained && (retained !== captain)) {
+          currentPlayers.push({ name: retained, role: 'Player', age: '—', price: 0, retained: true });
+        }
+
+        // Keep existing non-retained players
+        const auctionedPlayers = t.players.filter(p => !p.retained && !p.isCaptain);
+        t.players = [...currentPlayers, ...auctionedPlayers];
+
         showToast(`Team "${name}" updated! 🏟️`, 'success');
       } else {
         const newTeam = {
@@ -2898,9 +2925,14 @@
           purse: parseFloat(document.getElementById('purse-amount').value) || 100,
           spent: 0,
         };
-        if (retained) {
+
+        if (captain) {
+          newTeam.players.push({ name: captain, role: 'Captain', age: '—', price: 0, retained: true, isCaptain: true });
+        }
+        if (retained && (retained !== captain)) {
           newTeam.players.push({ name: retained, role: 'Player', age: '—', price: 0, retained: true });
         }
+
         teams.push(newTeam);
         showToast(`Team "${name}" added! 🏟️`, 'success');
       }
@@ -2932,8 +2964,8 @@
       </div>
       <h4>${t.name}</h4>
       <p>👑 ${t.captain || 'No captain'}</p>
-      <p style="font-size:0.7rem;color:var(--neon-cyan);"><span style="color:var(--text-muted)">Max Players:</span> ${t.maxPlayers || 6}</p>
-      ${t.retained ? `<p style="margin-top:4px;color:var(--neon-gold);font-size:0.75rem;">🔒 ${t.retained}</p>` : ''}
+      <p style="font-size:0.7rem;color:var(--neon-gold);"><span style="color:var(--text-muted)">Squad:</span> ${t.players.length} / ${t.maxPlayers || 6}</p>
+      ${t.retained ? `<p style="margin-top:4px;color:var(--neon-cyan);font-size:0.75rem;">🔒 ${t.retained}</p>` : ''}
       <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;">
         <button class="btn-edit" onclick="editTeam(${i})">✎ Edit</button>
         <button class="delete-btn" style="margin-top:0;" onclick="removeTeam(${i})">✕</button>
@@ -3218,20 +3250,23 @@
 
     function renderBiddingTeams() {
       const list = document.getElementById('teams-bid-list');
-      list.innerHTML = teams.map((t, i) => `
-    <div class="team-bid-row" id="team-row-${i}">
-      <div class="team-bid-left">
-        <div class="team-mini-logo">
-          ${t.logo ? `<img src="${t.logo}" alt="${t.name}">` : t.emoji || '🏏'}
+      list.innerHTML = teams.map((t, i) => {
+        const isFull = t.players.length >= (t.maxPlayers || 6);
+        return `
+        <div class="team-bid-row ${isFull ? 'team-full' : ''}" id="team-bid-row-${i}">
+          <div class="team-bid-left">
+            <div class="team-mini-logo">
+              ${t.logo ? `<img src="${t.logo}" alt="${t.name}">` : t.emoji || '🏏'}
+            </div>
+            <div class="team-bid-info">
+              <h4>${t.name} ${isFull ? '<span class="team-full-tag">FULL</span>' : ''}</h4>
+              <div class="purse">💰 ₹<span id="purse-${i}">${(t.purse - t.spent).toFixed(2)}</span>Cr left · <span id="count-${i}">${t.players.length}</span>/${t.maxPlayers || 6} Plrs</div>
+            </div>
+          </div>
+          <button class="bid-btn" id="bid-btn-${i}" onclick="placeBid(${i})" ${isFull ? 'disabled' : ''}>${isFull ? 'FULL' : 'BID'}</button>
         </div>
-        <div class="team-bid-info">
-          <h4>${t.name}</h4>
-          <div class="purse">💰 ₹<span id="purse-${i}">${(t.purse - t.spent).toFixed(2)}</span>Cr left</div>
-        </div>
-      </div>
-      <button class="bid-btn" id="bid-btn-${i}" onclick="placeBid(${i})" disabled>BID</button>
-    </div>
-  `).join('');
+      `;
+      }).join('');
     }
 
     function resetStageUI() {
@@ -3315,10 +3350,15 @@
       document.getElementById('prog-label').textContent = `${done} / ${total} players`;
       document.getElementById('prog-pct').textContent = pct + '%';
 
-      // Enable bid buttons
+      // Enable/Disable bid buttons based on purse AND max players
       teams.forEach((t, i) => {
         const btn = document.getElementById(`bid-btn-${i}`);
-        if (btn) btn.disabled = (t.purse - t.spent) < player.base;
+        if (btn) {
+          const isFull = t.players.length >= (t.maxPlayers || 6);
+          const canAfford = (t.purse - t.spent) >= player.base;
+          btn.disabled = isFull || !canAfford;
+          if (isFull) btn.textContent = 'FULL';
+        }
       });
 
       // Show controls
@@ -3415,11 +3455,15 @@
         row.classList.toggle('highest', i === teamIdx);
       });
 
-      // Disable teams that can't afford next round
       const nextRound = +(nextBid + increment).toFixed(2);
       teams.forEach((t, i) => {
         const btn = document.getElementById(`bid-btn-${i}`);
-        if (btn) btn.disabled = (t.purse - t.spent) < nextRound && i !== teamIdx;
+        if (btn) {
+          const isFull = t.players.length >= (t.maxPlayers || 6);
+          const canAfford = (t.purse - t.spent) >= nextRound;
+          btn.disabled = (isFull || !canAfford) && i !== teamIdx;
+          if (isFull) btn.textContent = 'FULL';
+        }
       });
 
       // Log
@@ -3507,6 +3551,13 @@
       const team = teams[teamIdx];
       const price = auctionState.currentBid;
 
+      // Rule: Final Max Players check (Safety)
+      if (team.players.length >= (team.maxPlayers || 6)) {
+        showToast(`🚫 FAILED: ${team.name} reached squad limit!`, 'error');
+        resetCurrentBid();
+        return;
+      }
+
       // Assign player to team
       team.players.push({ ...player, price, retained: false });
       team.spent += price;
@@ -3518,6 +3569,7 @@
 
       // Update purse display
       document.getElementById(`purse-${teamIdx}`).textContent = (team.purse - team.spent).toFixed(2);
+      document.getElementById(`count-${teamIdx}`).textContent = team.players.length;
 
       showSoldAnimation('SOLD!', player.name, `₹${price}Cr → ${team.name}`, true);
       launchConfetti();
