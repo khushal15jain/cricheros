@@ -216,12 +216,18 @@
         }
 
         .sponsor-item img {
-            max-height: 80px;
-            max-width: 200px;
+            max-height: 100px;
+            max-width: 250px;
             object-fit: contain;
-            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.6));
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
             animation: logo-glow 3s infinite alternate;
+            transition: transform 0.3s ease;
         }
+
+        .sponsor-item:hover img {
+            transform: scale(1.1);
+        }
+
 
         .sponsor-role-tag {
             font-family: 'Orbitron', monospace;
@@ -236,8 +242,13 @@
         }
 
         @keyframes logo-glow {
-            from { filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4)); }
-            to { filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.8)); }
+            from {
+                filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
+            }
+
+            to {
+                filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.8));
+            }
         }
 
         .stats-grid {
@@ -395,9 +406,24 @@
             scrollbar-color: var(--neon-cyan) transparent;
         }
 
-        .rc-logo { width: 60px; height: 60px; object-fit: contain; }
-        .rc-name { font-family: 'Orbitron', monospace; font-size: 1.4rem; color: var(--neon-cyan); }
-        .rc-spent { font-family: 'Rajdhani', sans-serif; font-size: 1rem; color: var(--neon-gold); font-weight: 700; }
+        .rc-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .rc-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.4rem;
+            color: var(--neon-cyan);
+        }
+
+        .rc-spent {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            color: var(--neon-gold);
+            font-weight: 700;
+        }
 
         .rc-player-list {
             display: flex;
@@ -416,7 +442,10 @@
             font-size: 0.85rem;
         }
 
-        .rc-player .p-price { color: var(--neon-green); font-family: 'Orbitron', monospace; }
+        .rc-player .p-price {
+            color: var(--neon-green);
+            font-family: 'Orbitron', monospace;
+        }
 
         /* Results Sponsors */
         .results-sponsor-bar {
@@ -458,9 +487,48 @@
         }
 
         @media (max-width: 768px) {
-            .results-title { font-size: 2rem; }
-            .results-grid { grid-template-columns: 1fr; }
+            .results-title {
+                font-size: 2rem;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
         }
+
+        /* Unified Toast System */
+        .toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(150px);
+            background: rgba(10, 20, 40, 0.98);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 50px;
+            padding: 14px 28px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            z-index: 10000;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            white-space: nowrap;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 255, 255, 0.2);
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success { border-color: var(--neon-green); box-shadow: 0 0 25px rgba(0, 255, 136, 0.3); color: var(--neon-green); }
+        .toast.error { border-color: var(--neon-red); box-shadow: 0 0 25px rgba(255, 51, 102, 0.3); color: var(--neon-red); }
+        .toast.gold { border-color: var(--neon-gold); box-shadow: 0 0 25px rgba(255, 215, 0, 0.3); color: var(--neon-gold); }
     </style>
 </head>
 
@@ -475,31 +543,72 @@
             </div>
         </div>
 
-        <div class="status-overlay" id="status-overlay">
+        <div id="status-overlay" class="status-overlay">
             <div class="status-text" id="status-text">SOLD!</div>
         </div>
+
+        <!-- Cinematic Completion Overlay for Broadcast -->
+        <div id="completion-overlay" style="position:fixed; inset:0; background:#000; z-index:5000; display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; overflow:hidden;">
+            <div id="completion-bg" style="position:absolute; inset:0; background: radial-gradient(circle at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);"></div>
+            <div style="position:relative; z-index:1;">
+                <div style="font-family:'Orbitron'; font-size:1.5rem; color:var(--neon-gold); letter-spacing:10px; margin-bottom:20px; animation: pulse 2s infinite;">TOURNAMENT</div>
+                <h1 style="font-family:'Orbitron'; font-size:4rem; font-weight:900; color:#fff; text-shadow: 0 0 40px rgba(255,255,255,0.3); letter-spacing:15px; margin-bottom:10px;">AUCTION COMPLETE</h1>
+                <p id="completion-timer" style="font-family:'Rajdhani'; color:var(--neon-cyan); font-size:1.2rem; letter-spacing:5px; margin-top:30px;">FINALIZING RESULTS IN 3...</p>
+            </div>
+        </div>
+
 
         <!-- Next Player Waiting Screen -->
         <div id="next-player-overlay"
             style="position:fixed; inset:0; background:rgba(2, 4, 8, 0.95); z-index:150; display:none; flex-direction:column; align-items:center; justify-content:center; gap:30px; backdrop-filter:blur(20px);">
             <div class="logo" style="font-size:3rem; animation: pulse 2s infinite;">S7L <span>AUCTION</span></div>
             <div style="text-align:center;">
-                <div style="font-family:'Orbitron'; color:var(--neon-gold); font-size:2.5rem; font-weight:900; letter-spacing:8px;">NEXT PLAYER</div>
-                <div style="font-family:'Rajdhani'; color:var(--neon-cyan); font-size:1.2rem; letter-spacing:4px; margin-top:10px;">PREPARING FOR NEXT ROUND...</div>
+                <div
+                    style="font-family:'Orbitron'; color:var(--neon-gold); font-size:2.5rem; font-weight:900; letter-spacing:8px;">
+                    NEXT PLAYER</div>
+                <div
+                    style="font-family:'Rajdhani'; color:var(--neon-cyan); font-size:1.2rem; letter-spacing:4px; margin-top:10px;">
+                    PREPARING FOR NEXT ROUND...</div>
             </div>
-            <div class="loading-bar-container" style="width:300px; height:4px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden; margin-top:20px;">
-                <div class="loading-bar-fill" style="width:100%; height:100%; background:var(--neon-gold); animation: loading-slide 3s infinite linear;"></div>
+            <div class="loading-bar-container"
+                style="width:300px; height:4px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden; margin-top:20px;">
+                <div class="loading-bar-fill"
+                    style="width:100%; height:100%; background:var(--neon-gold); animation: loading-slide 3s infinite linear;">
+                </div>
+            </div>
+            
+            <!-- Sponsor Logos in Waiting Overlay -->
+            <div style="margin-top:60px; text-align:center;">
+                <div style="font-family:'Rajdhani'; color:var(--text-muted); font-size:0.8rem; letter-spacing:5px; margin-bottom:20px;">
+                    OFFICIAL PARTNERS</div>
+                <div class="sponsor-list" id="next-player-sponsors" style="justify-content:center;"></div>
             </div>
         </div>
 
+
         <style>
             @keyframes loading-slide {
-                0% { transform: translateX(-100%); }
-                100% { transform: translateX(100%); }
+                0% {
+                    transform: translateX(-100%);
+                }
+
+                100% {
+                    transform: translateX(100%);
+                }
             }
+
             @keyframes pulse {
-                0%, 100% { opacity: 1; transform: scale(1); }
-                50% { opacity: 0.8; transform: scale(1.05); }
+
+                0%,
+                100% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+
+                50% {
+                    opacity: 0.8;
+                    transform: scale(1.05);
+                }
             }
         </style>
 
@@ -508,18 +617,22 @@
             <div class="results-header">
                 <div class="logo" style="margin-bottom:10px;">S7L <span>AUCTION</span></div>
                 <h1 class="results-title">AUCTION SUMMARY</h1>
-                <div style="font-family:'Rajdhani'; color:var(--text-muted); letter-spacing:4px;">FINAL TEAM COMPOSITIONS</div>
+                <div style="font-family:'Rajdhani'; color:var(--text-muted); letter-spacing:4px;">FINAL TEAM
+                    COMPOSITIONS</div>
             </div>
             <div class="results-grid" id="results-grid-container"></div>
-            
+
             <!-- Sponsors in Results -->
             <div class="results-sponsor-bar" id="results-sponsor-bar" style="display:none;">
-                <div style="font-family:'Rajdhani'; font-size:0.9rem; color:var(--neon-gold); letter-spacing:5px; font-weight:700;">OFFICIAL PARTNERS</div>
+                <div
+                    style="font-family:'Rajdhani'; font-size:0.9rem; color:var(--neon-gold); letter-spacing:5px; font-weight:700;">
+                    OFFICIAL PARTNERS</div>
                 <div class="rs-grid" id="rs-grid-container"></div>
             </div>
 
             <div style="text-align:center; margin-top:60px; padding-bottom:60px;">
-                <button onclick="location.reload()" style="background:none; border:1px solid var(--border); color:var(--text-muted); padding:10px 30px; border-radius:100px; cursor:pointer; font-family:'Orbitron'; font-size:0.8rem;">REFRESH</button>
+                <button onclick="location.reload()"
+                    style="background:none; border:1px solid var(--border); color:var(--text-muted); padding:10px 30px; border-radius:100px; cursor:pointer; font-family:'Orbitron'; font-size:0.8rem;">REFRESH</button>
             </div>
         </div>
 
@@ -535,7 +648,10 @@
             <div class="player-visual">
                 <div class="player-photo-wrap" id="player-photo">🏏</div>
                 <div class="player-info">
-                    <h2 class="player-name" id="player-name">READY...</h2>
+                    <div id="player-sno-tag"
+                        style="background:var(--neon-gold); color:#000; display:inline-block; padding:2px 10px; border-radius:4px; font-family:'Orbitron'; font-size:0.8rem; font-weight:900; margin-bottom:10px;">
+                        S.No: —</div>
+                    <h2 class="player-name" id="player-name" style="margin-top:5px;">READY...</h2>
                     <p class="player-meta" id="player-meta">AUCTION STARTING SOON</p>
                 </div>
             </div>
@@ -553,7 +669,8 @@
 
         <footer class="broadcast-footer">
             <div class="desktop-sponsors">
-                <div style="font-size:0.8rem; color:var(--neon-gold); letter-spacing:4px; margin-bottom:12px; font-weight:700; text-transform:uppercase;">
+                <div
+                    style="font-size:0.8rem; color:var(--neon-gold); letter-spacing:4px; margin-bottom:12px; font-weight:700; text-transform:uppercase;">
                     OFFICIAL PARTNERS
                 </div>
                 <div class="sponsor-list" id="footer-sponsors"></div>
@@ -576,13 +693,17 @@
         </footer>
     </div>
 
-    <script>
+        <!-- Toast -->
+        <div class="toast" id="toast"></div>
+
+        <script>
         const ui = {
             wait: document.getElementById('wait-overlay'),
             nextPlayerOverlay: document.getElementById('next-player-overlay'),
             status: document.getElementById('status-overlay'),
             statusText: document.getElementById('status-text'),
             playerName: document.getElementById('player-name'),
+            playerSno: document.getElementById('player-sno-tag'),
             playerMeta: document.getElementById('player-meta'),
             playerPhoto: document.getElementById('player-photo'),
             currentBid: document.getElementById('current-bid'),
@@ -590,14 +711,77 @@
             timer: document.getElementById('timer'),
             footerSponsors: document.getElementById('footer-sponsors'),
             mobileSponsors: document.getElementById('mobile-sponsors'),
+            nextPlayerSponsors: document.getElementById('next-player-sponsors'),
             totalPlayers: document.getElementById('total-players'),
+
             remPlayers: document.getElementById('rem-players'),
             soldPlayers: document.getElementById('sold-players')
         };
 
+        // Extract Auction ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentId = urlParams.get('id');
+
+        let lastEventId = null;
+        let toastTimeout;
+        function showToast(msg, type = 'info') {
+
+            const t = document.getElementById('toast');
+            clearTimeout(toastTimeout);
+            if (msg.includes('💰')) type = 'gold';
+            if (msg.includes('UNSOLD')) type = 'error';
+            if (msg.includes('SOLD')) type = 'success';
+            t.textContent = msg;
+            t.className = 'toast show ' + type;
+            toastTimeout = setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
         function updateUI(state) {
             if (!state) return;
-            
+
+            // PRIORITY: Hard Redirect if this specific auction is finished
+            if (state.event === 'finished' && (!currentId || state.auctionId == currentId)) {
+                const overlay = document.getElementById('completion-overlay');
+                const timerEl = document.getElementById('completion-timer');
+                
+                if (overlay && overlay.style.display !== 'flex') {
+                    overlay.style.display = 'flex';
+                    let count = 3;
+                    const ival = setInterval(() => {
+                        count--;
+                        if (count <= 0) {
+                            clearInterval(ival);
+                            window.location.href = 'results.html';
+                        } else {
+                            if (timerEl) timerEl.textContent = `FINALIZING RESULTS IN ${count}...`;
+                        }
+                    }, 1000);
+                }
+                return;
+            }
+
+
+
+            // Handle Toast Events from Admin
+            const eventId = state.event + '_' + state.timestamp;
+            if (lastEventId !== eventId) {
+                if (state.event === 'sold' && state.player) {
+                    showToast(`🏆 ${state.player.name} SOLD!`, 'success');
+                } else if (state.event === 'unsold' && state.player) {
+                    showToast(`⚠️ ${state.player.name} UNSOLD`, 'error');
+                } else if (state.event === 'bid') {
+                    showToast(`💰 NEW BID: ₹${state.currentBid}Cr`, 'gold');
+                }
+                lastEventId = eventId;
+            }
+
+            // Performance: If only a timer tick, skip heavy UI logic
+            if (state.event === 'timer') {
+                ui.timer.textContent = state.countdown;
+                ui.timer.style.color = state.countdown <= 10 ? 'var(--neon-red)' : 'var(--neon-gold)';
+                return;
+            }
+
             // Handle Waiting for next player
             if (state.event === 'waiting') {
                 ui.nextPlayerOverlay.style.display = 'flex';
@@ -610,6 +794,7 @@
 
             if (state.player) {
                 ui.playerName.textContent = state.player.name;
+                ui.playerSno.textContent = `S.No: ${state.player.sno || '—'}`;
                 ui.playerMeta.textContent = `${state.player.role.toUpperCase()} | BASE: ₹${state.player.base}Cr`;
                 if (state.player.photo) {
                     ui.playerPhoto.innerHTML = `<img src="${state.player.photo}" alt="${state.player.name}">`;
@@ -625,12 +810,12 @@
             ui.remPlayers.textContent = state.remaining;
             ui.soldPlayers.textContent = state.soldCount;
 
-            // Sponsors (Static List in Footer)
+            // Sponsors
             if (state.sponsors && state.sponsors.length > 0) {
                 const labels = ['CUP SPONSOR', 'AUCTION SPONSOR', 'LED SPONSOR'];
                 const sponsorHtml = state.sponsors.map((s, idx) => {
-                   if(!s) return '';
-                   return `
+                    if (!s) return '';
+                    return `
                      <div class="sponsor-item">
                        <span class="sponsor-role-tag">${labels[idx] || 'ASSOCIATE'}</span>
                        <img src="${s}" alt="Sponsor">
@@ -639,7 +824,9 @@
                 }).join('');
                 ui.footerSponsors.innerHTML = sponsorHtml;
                 ui.mobileSponsors.innerHTML = sponsorHtml;
+                if (ui.nextPlayerSponsors) ui.nextPlayerSponsors.innerHTML = sponsorHtml;
             }
+
 
             // Sync color logic for timer
             ui.timer.style.color = state.countdown <= 10 ? 'var(--neon-red)' : 'var(--neon-gold)';
@@ -653,19 +840,30 @@
                 ui.status.style.display = 'flex';
                 ui.statusText.textContent = 'UNSOLD';
                 ui.statusText.className = 'status-text unsold-color';
-            } else if (state.event === 'finished' && state.teams) {
-                renderBroadcastResults(state.teams, state.sponsors);
             } else {
                 ui.status.style.display = 'none';
             }
         }
+
+
+
+
+
 
         function renderBroadcastResults(teams, sponsors) {
             const overlay = document.getElementById('results-overlay');
             const grid = document.getElementById('results-grid-container');
             const sponsorBar = document.getElementById('results-sponsor-bar');
             const rsContainer = document.getElementById('rs-grid-container');
+            
+            // Aggressively hide ALL bidding-related overlays
+            if (ui.status) ui.status.style.display = 'none';
+            if (ui.nextPlayerOverlay) ui.nextPlayerOverlay.style.display = 'none';
+            if (ui.wait) ui.wait.style.display = 'none';
+            
             overlay.style.display = 'flex';
+
+
 
             grid.innerHTML = teams.map(t => `
                 <div class="result-card">
@@ -691,15 +889,15 @@
             if (sponsors && sponsors.length > 0) {
                 const labels = ['CUP SPONSOR', 'AUCTION SPONSOR', 'LED SPONSOR'];
                 const html = sponsors.map((s, idx) => {
-                   if(!s) return '';
-                   return `
+                    if (!s) return '';
+                    return `
                      <div class="rs-logo-wrap">
                         <div class="rs-role">${labels[idx]}</div>
                         <img class="rs-logo" src="${s}">
                      </div>
                    `;
                 }).join('');
-                
+
                 if (html.trim()) {
                     rsContainer.innerHTML = html;
                     sponsorBar.style.display = 'block';

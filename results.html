@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUCTION RESULTS | S7L</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --neon-gold: #FFD700;
+            --neon-cyan: #00FFFF;
+            --neon-green: #00FF88;
+            --neon-red: #FF3366;
+            --bg-dark: #020408;
+            --bg-card: #080C16;
+            --border: rgba(0, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(191, 95, 255, 0.05) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--neon-gold);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .logo span {
+            color: var(--neon-cyan);
+        }
+
+        .title {
+            font-family: 'Orbitron', monospace;
+            font-size: 3.5rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .subtitle {
+            font-family: 'Rajdhani', sans-serif;
+            color: var(--neon-cyan);
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .team-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.1);
+        }
+
+        .team-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .team-logo {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        }
+
+        .team-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            color: var(--neon-gold);
+        }
+
+        .team-stats {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: var(--neon-cyan);
+        }
+
+        .player-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-cyan) transparent;
+        }
+
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+
+        .player-name {
+            font-weight: 600;
+        }
+
+        .player-price {
+            font-family: 'Orbitron', monospace;
+            color: var(--neon-green);
+            font-size: 0.85rem;
+        }
+
+        .footer-actions {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            background: none;
+            border: 1px solid var(--neon-gold);
+            color: var(--neon-gold);
+            padding: 15px 40px;
+            font-family: 'Orbitron', monospace;
+            font-size: 1rem;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: var(--neon-gold);
+            color: #000;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+        }
+
+        /* Sponsors */
+        .sponsors-section {
+            margin-top: 80px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid var(--border);
+            text-align: center;
+            border-radius: 30px;
+        }
+
+        .sponsors-grid {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .sponsor-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sponsor-img {
+            max-height: 80px;
+            max-width: 200px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
+            transition: transform 0.3s ease;
+        }
+
+        .sponsor-img:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.5));
+        }
+
+        @keyframes fadeInUp {
+
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2rem; letter-spacing: 5px; }
+            .results-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">S7L <span>AUCTION</span></div>
+            <h1 class="title">OFFICIAL RESULTS</h1>
+            <p class="subtitle">Tournament Final Standings</p>
+        </header>
+
+        <div class="results-grid" id="results-grid">
+            <!-- Team cards will be injected here -->
+        </div>
+
+        <div class="sponsors-section" id="sponsors-section" style="display:none;">
+            <div style="font-family:'Rajdhani'; color:var(--neon-gold); font-size:0.9rem; letter-spacing:5px; font-weight:700;">
+                OFFICIAL PARTNERS</div>
+            <div class="sponsors-grid" id="sponsors-grid"></div>
+        </div>
+
+
+        <div class="footer-actions">
+            <a href="INDEX.HTML" class="btn" id="back-btn" style="display:none;">BACK TO DASHBOARD</a>
+            <button onclick="location.reload()" class="btn">REFRESH RESULTS</button>
+        </div>
+    </div>
+
+    <script>
+        function loadResults() {
+            const dataRaw = localStorage.getItem('ipa_final_results');
+            if (!dataRaw) {
+                document.getElementById('results-grid').innerHTML = `
+                    <div style="grid-column: 1/-1; text-align:center; padding: 100px 0;">
+                        <h2 style="font-family:'Orbitron'; color:var(--neon-red);">NO RESULTS FOUND</h2>
+                        <p style="margin-top:20px; color:rgba(255,255,255,0.5);">The auction may not have finished yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const data = JSON.parse(dataRaw);
+                const teams = data.teams;
+                
+                // Show Back button if user is Admin (simple check based on referer or state)
+                if (localStorage.getItem('ipa_admin_mode') === 'true') {
+                    document.getElementById('back-btn').style.display = 'inline-block';
+                }
+
+                const grid = document.getElementById('results-grid');
+                grid.innerHTML = teams.map((t, idx) => `
+                    <div class="team-card" style="animation-delay: ${idx * 0.1}s">
+                        <div class="team-header">
+                            ${t.logo ? `<img src="${t.logo}" class="team-logo">` : `<div style="font-size:3rem;">🏏</div>`}
+                            <div class="team-name">${t.name}</div>
+                        </div>
+                        <div class="team-stats">
+                            <div class="stat-box">
+                                <div class="stat-label">Spent</div>
+                                <div class="stat-value">₹${parseFloat(t.spent || 0).toFixed(2)}Cr</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Players</div>
+                                <div class="stat-value">${t.players.length}</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Remaining</div>
+                                <div class="stat-value">₹${(t.purse - (t.spent || 0)).toFixed(2)}Cr</div>
+                            </div>
+                        </div>
+                        <div class="player-list">
+                            ${t.players.map(p => `
+                                <div class="player-item">
+                                    <span class="player-name">#${p.sno || '—'} ${p.name}</span>
+                                    <span class="player-price">₹${parseFloat(p.price || 0).toFixed(2)}Cr</span>
+                                </div>
+                            `).join('')}
+                            ${t.players.length === 0 ? '<div style="text-align:center; padding:20px; color:rgba(255,255,255,0.3);">No players bought</div>' : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                // Render Sponsors
+                if (data.sponsors && data.sponsors.some(s => s !== null)) {
+                    const sSection = document.getElementById('sponsors-section');
+                    const sGrid = document.getElementById('sponsors-grid');
+                    const labels = ['CUP SPONSOR', 'AUCTION SPONSOR', 'LED SPONSOR'];
+                    
+                    sGrid.innerHTML = data.sponsors.map((s, idx) => {
+                        if (!s) return '';
+                        return `
+                            <div class="sponsor-item">
+                                <div style="font-family:'Orbitron'; font-size:0.6rem; color:var(--neon-gold); margin-bottom:10px;">${labels[idx]}</div>
+                                <img src="${s}" class="sponsor-img">
+                            </div>
+                        `;
+                    }).join('');
+                    sSection.style.display = 'block';
+                }
+
+            } catch (e) {
+
+                console.error("Error loading results:", e);
+            }
+        }
+
+        window.onload = loadResults;
+    </script>
+</body>
+
+</html>

@@ -775,40 +775,8 @@
       color: var(--neon-purple);
     }
 
-    /* ===== TOAST ===== */
-    .toast {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: rgba(10, 16, 32, 0.95);
-      border: 1px solid var(--neon-cyan);
-      color: var(--text-primary);
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 600;
-      font-size: 0.95rem;
-      z-index: 2000;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 255, 0.2);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      opacity: 0;
-      pointer-events: none;
-    }
+    /* Consolidation: Toast style removed from here and unified in the main styles section below */
 
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .toast.error {
-      border-color: var(--neon-red);
-      box-shadow: 0 10px 30px rgba(255, 51, 102, 0.2);
-    }
 
     .toast.success {
       border-color: var(--neon-green);
@@ -1036,8 +1004,15 @@
     }
 
     @keyframes float-in {
-      from { transform: translateX(40px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
+      from {
+        transform: translateX(40px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
 
     /* === RESPONSIVE STYLES === */
@@ -1091,13 +1066,23 @@
         padding: 8px;
       }
 
-      .premium-sponsor-logo { height: 50px; }
+      .premium-sponsor-logo {
+        height: 50px;
+      }
 
-      .player-card-big h2 { font-size: 1.5rem; }
-      
-      .current-bid-val { font-size: 3rem; }
+      .player-card-big h2 {
+        font-size: 1.5rem;
+      }
 
-      .player-avatar-big { width: 100px; height: 100px; font-size: 3rem; }
+      .current-bid-val {
+        font-size: 3rem;
+      }
+
+      .player-avatar-big {
+        width: 100px;
+        height: 100px;
+        font-size: 3rem;
+      }
     }
 
     .live-dot {
@@ -1483,11 +1468,12 @@
     .sold-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 500;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 11000; /* Above toasts and panels */
       display: none;
       align-items: center;
       justify-content: center;
+
       flex-direction: column;
       gap: 20px;
       animation: fadeIn 0.3s;
@@ -1741,27 +1727,41 @@
       color: var(--text-muted);
     }
 
-    /* toast */
+    /* Unified Toast System */
     .toast {
       position: fixed;
-      bottom: 30px;
+      bottom: 40px;
       left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: var(--bg-panel);
+      transform: translateX(-50%) translateY(150px);
+      background: rgba(10, 20, 40, 0.98);
       border: 1px solid var(--neon-cyan);
-      border-radius: 12px;
-      padding: 14px 24px;
-      font-size: 0.9rem;
-      color: var(--neon-cyan);
-      z-index: 9999;
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-radius: 50px; /* Capsule shape */
+      padding: 14px 28px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      z-index: 12000; /* Above sold-overlay (11000) */
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
       white-space: nowrap;
-      box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 255, 255, 0.2);
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      pointer-events: none;
     }
 
     .toast.show {
       transform: translateX(-50%) translateY(0);
+      opacity: 1;
     }
+
+    .toast.success { border-color: var(--neon-green); box-shadow: 0 0 25px rgba(0, 255, 136, 0.3); color: var(--neon-green); }
+    .toast.error { border-color: var(--neon-red); box-shadow: 0 0 25px rgba(255, 51, 102, 0.3); color: var(--neon-red); }
+    .toast.gold { border-color: var(--neon-gold); box-shadow: 0 0 25px rgba(255, 215, 0, 0.3); color: var(--neon-gold); }
+
 
     /* select */
     select {
@@ -2177,7 +2177,8 @@
         <!-- Sponsor Logos Section -->
         <div class="setup-card" style="margin-top:24px;border-color:rgba(191,95,255,0.3);">
           <h3>💎 SPONSOR LOGOS (Optional)</h3>
-          <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:20px;">Upload up to 3 sponsor logos to display
+          <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:20px;">Upload up to 3 sponsor logos to
+            display
             during the live auction.</p>
           <div class="three-col">
             <div class="form-group">
@@ -2339,7 +2340,7 @@
         <div class="player-count-info">
           <div class="count-stat">
             <div class="val" id="stage-player-num">—</div>
-            <div class="lbl">PLAYER #</div>
+            <div class="lbl">S.No</div>
           </div>
           <div class="count-stat">
             <div class="val countdown" id="countdown-timer">30</div>
@@ -2476,8 +2477,8 @@
         </div>
       </div>
       <div class="form-group">
-        <label>Max Players</label>
-        <input type="number" id="team-max-players" value="15" min="1" max="30">
+        <label>Max Players (Default: 8)</label>
+        <input type="number" id="team-max-players" value="8" min="1" max="30">
       </div>
       <div style="margin-top:4px;">
         <button class="btn btn-gold btn-full" onclick="addTeam()">✓ ADD TEAM</button>
@@ -2490,9 +2491,15 @@
     <div class="modal">
       <button class="modal-close" onclick="closeModal('player-modal')">✕</button>
       <h3>👤 ADD PLAYER</h3>
-      <div class="form-group">
-        <label>Player Name</label>
-        <input type="text" id="player-name" placeholder="e.g. Virat Kohli">
+      <div class="two-col">
+        <div class="form-group" style="flex:2;">
+          <label>Player Name</label>
+          <input type="text" id="player-name" placeholder="e.g. Virat Kohli">
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label>S.No</label>
+          <input type="text" id="player-sno" placeholder="e.g. 01">
+        </div>
       </div>
       <div class="two-col">
         <div class="form-group">
@@ -2548,8 +2555,7 @@
     <div class="sold-details">
       <h3 id="sold-player-name">Player Name</h3>
       <p id="sold-price-display">₹ 0 Cr</p>
-      <p id="sold-team-display"
-        style="color:var(--neon-cyan);font-size:1rem;margin-top:4px;font-family:'Rajdhani',sans-serif;">To Team</p>
+      <p id="sold-team-display" style="color:var(--neon-cyan);font-size:1rem;margin-top:4px;font-family:'Rajdhani',sans-serif;">To Team</p>
     </div>
   </div>
 
@@ -2562,427 +2568,471 @@
     </div>
   </div>
 
+  <!-- Cinematic Completion Overlay -->
+  <div id="completion-overlay" style="position:fixed; inset:0; background:#000; z-index:5000; display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; overflow:hidden;">
+      <div id="completion-bg" style="position:absolute; inset:0; background: radial-gradient(circle at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);"></div>
+      <div style="position:relative; z-index:1;">
+          <div style="font-family:'Orbitron'; font-size:1.5rem; color:var(--neon-gold); letter-spacing:10px; margin-bottom:20px; animation: pulse 2s infinite;">TOURNAMENT</div>
+          <h1 style="font-family:'Orbitron'; font-size:4rem; font-weight:900; color:#fff; text-shadow: 0 0 40px rgba(255,255,255,0.3); letter-spacing:15px; margin-bottom:10px;">AUCTION COMPLETE</h1>
+          <p id="completion-timer" style="font-family:'Rajdhani'; color:var(--neon-cyan); font-size:1.2rem; letter-spacing:5px; margin-top:30px;">FINALIZING RESULTS IN 3...</p>
+      </div>
+  </div>
+
+
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
   <!-- Hidden CSV Input -->
   <input type="file" id="csv-import-input" style="display:none" accept=".csv" onchange="handleCSVImport(event)">
 
-  <script>
-    // ==================== DATABASE (localStorage) ====================
-    const DB = {
-      get: (key, def = null) => {
-        try { return JSON.parse(localStorage.getItem(key)) ?? def; } catch { return def; }
-      },
-      set: (key, val) => localStorage.setItem(key, JSON.stringify(val)),
-      users: () => DB.get('ipa_users', []),
-      auctions: () => DB.get('ipa_auctions', []),
-      saveUsers: (u) => DB.set('ipa_users', u),
-      saveAuctions: (a) => DB.set('ipa_auctions', a),
-    };
-
-    // ==================== STATE ====================
-    let currentUser = DB.get('ipa_current_user', null);
-    let currentAuction = null;
-    let auctionState = {
-      players: [],           // shuffled
-      currentIdx: -1,
-      currentBid: 0,
-      currentBidder: null,   // team index
-      soldCount: 0,
-      unsoldCount: 0,
-      unsoldPlayers: [],
-      isReshuffleRound: false,
-      auctionStarted: false,
-    };
-    let teams = [];
-    let countdownInterval = null;
-    let countdownVal = 30;
-    let sponsorToggleInterval = null;
-    let currentSponsorIdx = 0;
-
-    let teamLogoData = null;
-    let playerPhotoData = null;
-    let editingTeamIdx = -1;
-    let editingPlayerIdx = -1;
-    let csvImportType = null;
-    let unsoldTracker = {}; // player.id -> count
-    let sponsorImages = [null, null, null];
-
-    // ==================== CSV IMPORT ====================
-    function triggerCSVImport(type) {
-      csvImportType = type;
-      document.getElementById('csv-import-input').click();
-    }
-
-    function handleCSVImport(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      Papa.parse(file, {
-        header: true,
-        skipEmptyLines: true,
-        complete: (results) => {
-          processCSV(results.data, csvImportType);
-          e.target.value = ''; // Reset for next time
-        },
-        error: (err) => {
-          showToast('Error parsing CSV: ' + err.message, 'error');
-        }
-      });
-    }
-
-    function processCSV(data, type) {
-      let addedCount = 0;
-      if (type === 'teams') {
-        const maxTeams = parseInt(document.getElementById('num-teams').value) || 8;
-        data.forEach(row => {
-          if (teams.length >= maxTeams) return;
-          const name = (row['Team Name'] || row['name'] || row['Team'] || '').trim();
-          const captain = (row['Captain Name'] || row['captain'] || row['Captain'] || '').trim();
-          const captainAge = (row['Captain Age'] || row['captain_age'] || '').trim();
-          const retained = (row['Retained Player'] || row['retained'] || '').trim();
-          const retainedAge = (row['Retained Age'] || row['retained_age'] || '').trim();
-          const maxPlayers = parseInt(row['Max Players'] || row['max_players'] || row['MaxPlayers']) || 15;
-          const logo = (row['Logo'] || row['logo'] || row['Image'] || row['logo_filename'] || row['image_filename'] || '').trim();
-
-          if (!name) return;
-
-          const emojis = ['🦁', '🐯', '🦅', '🐉', '🦊', '🦁', '⚡', '🔥', '🌊', '💎', '🏆', '⭐'];
-          const newTeam = {
-            id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
-            name,
-            logo: logo || null,
-            emoji: emojis[teams.length % emojis.length],
-            captain,
-            captainAge,
-            retained,
-            retainedAge,
-            maxPlayers,
-            players: [],
-            purse: parseFloat(document.getElementById('purse-amount').value) || 100,
-            spent: 0,
+        <script>
+          // ==================== DATABASE (localStorage) ====================
+          const DB = {
+            get: (key, def = null) => {
+              try { return JSON.parse(localStorage.getItem(key)) ?? def; } catch { return def; }
+            },
+            set: (key, val) => localStorage.setItem(key, JSON.stringify(val)),
+            users: () => DB.get('ipa_users', []),
+            auctions: () => DB.get('ipa_auctions', []),
+            saveUsers: (u) => DB.set('ipa_users', u),
+            saveAuctions: (a) => DB.set('ipa_auctions', a),
           };
-          if (captain) {
-            newTeam.players.push({ name: captain, role: 'Captain', age: captainAge || '—', price: 0, retained: true, isCaptain: true });
+
+          // ==================== STATE ====================
+          let currentUser = DB.get('ipa_current_user', null);
+          let currentAuction = null;
+          let auctionState = {
+            players: [],           // shuffled
+            currentIdx: -1,
+            currentBid: 0,
+            currentBidder: null,   // team index
+            soldCount: 0,
+            unsoldCount: 0,
+            unsoldPlayers: [],
+            isReshuffleRound: false,
+            auctionStarted: false,
+          };
+          let teams = [];
+          let countdownInterval = null;
+          let countdownVal = 30;
+          let sponsorToggleInterval = null;
+          let currentSponsorIdx = 0;
+
+          let teamLogoData = null;
+          let playerPhotoData = null;
+          let editingTeamIdx = -1;
+          let editingPlayerIdx = -1;
+          let csvImportType = null;
+          let unsoldTracker = {}; // player.id -> count
+          let sponsorImages = [null, null, null];
+
+          // ==================== CSV IMPORT ====================
+          function triggerCSVImport(type) {
+            csvImportType = type;
+            document.getElementById('csv-import-input').click();
           }
-          if (retained && (retained !== captain)) {
-            newTeam.players.push({ name: retained, role: 'Player', age: retainedAge || '—', price: 0, retained: true });
+
+          function handleCSVImport(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            Papa.parse(file, {
+              header: true,
+              skipEmptyLines: true,
+              complete: (results) => {
+                processCSV(results.data, csvImportType);
+                e.target.value = ''; // Reset for next time
+              },
+              error: (err) => {
+                showToast('Error parsing CSV: ' + err.message, 'error');
+              }
+            });
           }
-          teams.push(newTeam);
-          addedCount++;
-        });
-        renderTeamsGrid();
-        showToast(`Successfully imported ${addedCount} teams!`, 'success');
-      } else {
-        data.forEach(row => {
-          const name = row.name || row.Name || row.Player;
-          if (!name) return;
 
-          const role = row.role || row.Role || row.Position || 'Batsman';
-          const age = parseInt(row.age || row.Age) || 25;
-          const base = parseFloat(row.base || row.BasePrice || row.Base || row.Price) || 1.0;
-          const photo = (row.photo || row.Photo || row.Image || row.Img || row.image_filename || row.photo_filename || '').trim();
+          function processCSV(data, type) {
+            // 1. Clean data keys (Handle BOM / Byte Order Mark from Excel)
+            const cleanData = data.map(row => {
+              const cleanRow = {};
+              for (const key in row) {
+                const cleanKey = key.replace(/^\ufeff/, '').trim();
+                cleanRow[cleanKey] = row[key];
+              }
+              return cleanRow;
+            });
 
-          newAuctionPlayers.push({
-            id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
-            name,
-            role,
-            age,
-            base,
-            photo: photo || null
-          });
-          addedCount++;
-        });
-        renderPlayersTable();
-        showToast(`Successfully imported ${addedCount} players!`, 'success');
-      }
-    }
+            let addedCount = 0;
+            if (type === 'teams') {
+              const inputTeams = parseInt(document.getElementById('num-teams').value) || 8;
+              // If CSV has more teams, we update the input value to accommodate them
+              const maxTeams = Math.max(inputTeams, cleanData.length);
+              document.getElementById('num-teams').value = maxTeams;
 
-    // ==================== SCREENS ====================
-    function showScreen(id) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-    }
+              // Clear existing teams for a fresh import
+              teams = [];
 
-    function showDashboard() {
-      loadAuctions();
-      showScreen('dashboard-screen');
-      updateNavUser();
-    }
+              cleanData.forEach(row => {
+                if (teams.length >= maxTeams) return;
+                const name = (row['TeamName'] || row['Team Name'] || row['name'] || row['Team'] || '').trim();
+                const captain = (row['Captain Name'] || row['captain'] || row['Captain'] || '').trim();
+                const captainAge = (row['Captain Age'] || row['captain_age'] || '').trim();
+                const retained = (row['Retained Player'] || row['retained'] || '').trim();
+                const retainedAge = (row['Retained Age'] || row['retained_age'] || '').trim();
+                const maxPlayers = parseInt(row['Max Players'] || row['max_players'] || row['MaxPlayers']) || 8;
+                const logo = (row['Logo'] || row['logo'] || row['Image'] || row['logo_filename'] || row['image_filename'] || '').trim();
 
-    function showCreateAuction() {
-      teams = [];
-      newAuctionPlayers = [];
-      teamLogoData = null;
-      playerPhotoData = null;
-      sponsorImages = [null, null, null];
-      // Reset sponsor previews
-      for (let i = 0; i < 3; i++) {
-        const preview = document.getElementById(`sponsor-${i + 1}-preview`);
-        if (preview) preview.innerHTML = '<span style="font-size:1.5rem;">💎</span><p style="font-size:0.7rem;">Click to upload</p>';
-      }
-      renderTeamsGrid();
-      renderPlayersTable();
-      goToStep(1);
-      showScreen('create-screen');
-    }
+                if (!name) return;
 
-    function showResults() {
-      const auctions = DB.auctions().filter(a => a.userId === currentUser.id && a.status === 'done');
-      if (auctions.length === 0) {
-        showToast('No completed auctions yet!');
-        return;
-      }
-      renderResults(auctions[auctions.length - 1]);
-      showScreen('results-screen');
-    }
+                const emojis = ['🦁', '🐯', '🦅', '🐉', '🦊', '🦁', '⚡', '🔥', '🌊', '💎', '🏆', '⭐'];
+                const newTeam = {
+                  id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+                  name,
+                  logo: logo || null,
+                  emoji: emojis[teams.length % emojis.length],
+                  captain,
+                  captainAge,
+                  retained,
+                  retainedAge,
+                  maxPlayers,
+                  players: [],
+                  purse: parseFloat(document.getElementById('purse-amount').value) || 100,
+                  spent: 0,
+                };
+                if (captain) {
+                  newTeam.players.push({ name: captain, role: 'Captain', age: captainAge || '—', price: 0, retained: true, isCaptain: true });
+                }
+                if (retained && (retained !== captain)) {
+                  newTeam.players.push({ name: retained, role: 'Player', age: retainedAge || '—', price: 0, retained: true });
+                }
+                teams.push(newTeam);
+                addedCount++;
+              });
+              renderTeamsGrid();
+              showToast(`Successfully imported ${addedCount} teams!`, 'success');
+            } else {
+              // Players Import
+              newAuctionPlayers = [];
+              const snoSet = new Set();
+              let duplicates = 0;
 
-    function logout() {
-      DB.set('ipa_current_user', null);
-      currentUser = null;
-      showScreen('login-screen');
-    }
+              cleanData.forEach(row => {
+                const name = row.name || row.Name || row.Player || row['Name'] || row['Player'];
+                if (!name) return;
 
-    // ==================== AUTH ====================
-    function switchTab(tab) {
-      const btns = document.querySelectorAll('.tab-btn');
-      btns.forEach(b => {
-        b.classList.toggle('active', b.innerText.toLowerCase() === tab.toLowerCase());
-      });
-      document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
-      document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
-    }
+                const role = row.role || row.Role || row.Position || row['Role'] || row['Position'] || 'Batsman';
+                const age = parseInt(row.age || row.Age || row['Age']) || 25;
+                const base = parseFloat(row.base || row.BasePrice || row.Base || row.Price || row['BasePrice']) || 1.0;
+                const photo = (row.photo || row.Photo || row.Image || row.Img || row.image_filename || row.photo_filename || '').trim();
+                const sno = (row['S.No'] || row['Sr. No'] || row['S. No'] || row['S. No.'] || row['SrNo'] || row['SNo'] || row['Sr No'] || row['Sr. No.'] || row['Serial'] || row['serial'] || row['id'] || row['ID'] || '').trim();
 
-    function hashPassword(p) {
-      let h = 0;
-      for (let i = 0; i < p.length; i++) h = ((h << 5) - h + p.charCodeAt(i)) | 0;
-      return h.toString(36);
-    }
+                if (sno && snoSet.has(sno)) duplicates++;
+                if (sno) snoSet.add(sno);
 
-    function handleLogin() {
-      const email = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-password').value;
-      const errEl = document.getElementById('login-error');
-      errEl.style.display = 'none';
+                newAuctionPlayers.push({
+                  id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+                  name,
+                  role,
+                  age,
+                  base,
+                  sno: sno || (addedCount + 1).toString().padStart(2, '0'),
+                  photo: photo || null
 
-      if (!email || !password) { errEl.style.display = 'block'; errEl.textContent = 'Please fill all fields'; return; }
+                });
+                addedCount++;
+              });
+              renderPlayersTable();
+              let msg = `Successfully imported ${addedCount} players!`;
+              if (duplicates > 0) msg += ` (Found ${duplicates} duplicate S.No)`;
+              showToast(msg, duplicates > 0 ? 'info' : 'success');
+            }
 
-      const users = DB.users();
-      const user = users.find(u => u.email === email && u.password === hashPassword(password));
+          }
 
-      if (!user) { errEl.style.display = 'block'; errEl.textContent = 'Invalid email or password'; return; }
+          // ==================== SCREENS ====================
+          function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+          }
 
-      currentUser = user;
-      DB.set('ipa_current_user', user);
-      updateNavUser();
-      loadAuctions();
-      showScreen('dashboard-screen');
-      showToast(`Welcome back, ${user.name}! 🏏`);
-    }
+          function showDashboard() {
+            loadAuctions();
+            showScreen('dashboard-screen');
+            updateNavUser();
+          }
 
-    function handleRegister() {
-      const name = document.getElementById('reg-name').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
-      const phone = document.getElementById('reg-phone').value.trim();
-      const password = document.getElementById('reg-password').value;
-      const errEl = document.getElementById('reg-error');
-      const sucEl = document.getElementById('reg-success');
-      errEl.style.display = 'none'; sucEl.style.display = 'none';
+          function showCreateAuction() {
+            teams = [];
+            newAuctionPlayers = [];
+            teamLogoData = null;
+            playerPhotoData = null;
+            sponsorImages = [null, null, null];
+            // Reset sponsor previews
+            for (let i = 0; i < 3; i++) {
+              const preview = document.getElementById(`sponsor-${i + 1}-preview`);
+              if (preview) preview.innerHTML = '<span style="font-size:1.5rem;">💎</span><p style="font-size:0.7rem;">Click to upload</p>';
+            }
+            renderTeamsGrid();
+            renderPlayersTable();
+            goToStep(1);
+            showScreen('create-screen');
+          }
 
-      if (!name || !email || !phone || !password) { errEl.style.display = 'block'; errEl.textContent = 'All fields required'; return; }
-      if (password.length < 6) { errEl.style.display = 'block'; errEl.textContent = 'Password must be 6+ characters'; return; }
+          function showResults() {
+            const auctions = DB.auctions().filter(a => a.userId === currentUser.id && a.status === 'done');
+            if (auctions.length === 0) {
+              showToast('No completed auctions yet!');
+              return;
+            }
+            renderResults(auctions[auctions.length - 1]);
+            showScreen('results-screen');
+          }
 
-      const users = DB.users();
-      if (users.find(u => u.email === email)) { errEl.style.display = 'block'; errEl.textContent = 'Email already registered'; return; }
+          function logout() {
+            DB.set('ipa_current_user', null);
+            currentUser = null;
+            showScreen('login-screen');
+          }
 
-      const newUser = { id: Date.now().toString(), name, email, phone, password: hashPassword(password) };
-      users.push(newUser);
-      DB.saveUsers(users);
+          // ==================== AUTH ====================
+          function switchTab(tab) {
+            const btns = document.querySelectorAll('.tab-btn');
+            btns.forEach(b => {
+              b.classList.toggle('active', b.innerText.toLowerCase() === tab.toLowerCase());
+            });
+            document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+          }
 
-      sucEl.style.display = 'block';
-      setTimeout(() => switchTab('login'), 1500);
-    }
+          function hashPassword(p) {
+            let h = 0;
+            for (let i = 0; i < p.length; i++) h = ((h << 5) - h + p.charCodeAt(i)) | 0;
+            return h.toString(36);
+          }
 
-    function updateNavUser() {
-      if (!currentUser) return;
-      document.getElementById('nav-user-name').textContent = currentUser.name;
-      document.getElementById('nav-user-email').textContent = currentUser.email;
-      document.getElementById('nav-avatar').textContent = currentUser.name[0].toUpperCase();
-    }
+          function handleLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const errEl = document.getElementById('login-error');
+            errEl.style.display = 'none';
 
-    // ==================== CREATE AUCTION ====================
-    let newAuctionPlayers = [];
+            if (!email || !password) { errEl.style.display = 'block'; errEl.textContent = 'Please fill all fields'; return; }
 
-    function goToStep(n) {
-      for (let i = 1; i <= 4; i++) {
-        const stepEl = document.getElementById(`create-step-${i}`);
-        if (stepEl) stepEl.style.display = i === n ? 'block' : 'none';
-        const stepInd = document.getElementById(`step-${i}`);
-        if (stepInd) {
-          stepInd.className = 'step';
-          if (i < n) stepInd.classList.add('done');
-          if (i === n) stepInd.classList.add('active');
-        }
-      }
-      if (n === 4) renderLaunchSummary();
-    }
+            const users = DB.users();
+            const user = users.find(u => u.email === email && u.password === hashPassword(password));
 
-    function openTeamModal() {
-      const maxTeams = parseInt(document.getElementById('num-teams').value) || 8;
-      if (teams.length >= maxTeams && editingTeamIdx === -1) { showToast(`Max ${maxTeams} teams allowed!`, 'error'); return; }
+            if (!user) { errEl.style.display = 'block'; errEl.textContent = 'Invalid email or password'; return; }
 
-      editingTeamIdx = -1;
-      document.getElementById('team-name').value = '';
-      document.getElementById('captain-name').value = '';
-      document.getElementById('captain-age').value = '';
-      document.getElementById('retained-player').value = '';
-      document.getElementById('retained-age').value = '';
-      document.getElementById('team-max-players').value = '15';
-      document.getElementById('team-logo-input').value = '';
-      document.getElementById('team-logo-preview-wrap').innerHTML = '<span style="font-size:2rem;">🏏</span><p>Click to upload team logo (optional)</p>';
-      document.querySelector('#team-modal h3').textContent = '🏟️ ADD TEAM';
-      document.querySelector('#team-modal .btn-gold').textContent = '✓ ADD TEAM';
-      teamLogoData = null;
-      openModal('team-modal');
-    }
+            currentUser = user;
+            DB.set('ipa_current_user', user);
+            updateNavUser();
+            loadAuctions();
+            showScreen('dashboard-screen');
+            showToast(`Welcome back, ${user.name}! 🏏`);
+          }
 
-    function editTeam(idx) {
-      const t = teams[idx];
-      editingTeamIdx = idx;
-      document.getElementById('team-name').value = t.name;
-      document.getElementById('captain-name').value = t.captain || '';
-      document.getElementById('captain-age').value = t.captainAge || '';
-      document.getElementById('retained-player').value = t.retained || '';
-      document.getElementById('retained-age').value = t.retainedAge || '';
-      document.getElementById('team-max-players').value = t.maxPlayers || 15;
-      teamLogoData = t.logo;
-      if (teamLogoData) {
-        document.getElementById('team-logo-preview-wrap').innerHTML = `<img src="${teamLogoData}" class="preview-img" alt="logo">`;
-      } else {
-        document.getElementById('team-logo-preview-wrap').innerHTML = `<span style="font-size:2rem;">${t.emoji || '🏏'}</span><p>Logo not set</p>`;
-      }
-      document.querySelector('#team-modal h3').textContent = '📝 EDIT TEAM';
-      document.querySelector('#team-modal .btn-gold').textContent = '✓ UPDATE TEAM';
-      openModal('team-modal');
-    }
+          function handleRegister() {
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const errEl = document.getElementById('reg-error');
+            const sucEl = document.getElementById('reg-success');
+            errEl.style.display = 'none'; sucEl.style.display = 'none';
 
-    function handleTeamLogo(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        teamLogoData = ev.target.result;
-        document.getElementById('team-logo-preview-wrap').innerHTML = `<img src="${teamLogoData}" class="preview-img" alt="logo">`;
-      };
-      reader.readAsDataURL(file);
-    }
+            if (!name || !email || !phone || !password) { errEl.style.display = 'block'; errEl.textContent = 'All fields required'; return; }
+            if (password.length < 6) { errEl.style.display = 'block'; errEl.textContent = 'Password must be 6+ characters'; return; }
 
-    function handlePlayerPhoto(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        playerPhotoData = ev.target.result;
-        document.getElementById('player-photo-preview-wrap').innerHTML = `<img src="${playerPhotoData}" class="preview-img" alt="photo">`;
-      };
-      reader.readAsDataURL(file);
-    }
+            const users = DB.users();
+            if (users.find(u => u.email === email)) { errEl.style.display = 'block'; errEl.textContent = 'Email already registered'; return; }
 
-    function handleSponsorPhoto(e, index) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        sponsorImages[index] = ev.target.result;
-        document.getElementById(`sponsor-${index + 1}-preview`).innerHTML = `<img src="${ev.target.result}" style="width:100%;height:60px;object-fit:contain;border-radius:4px;">`;
-      };
-      reader.readAsDataURL(file);
-    }
+            const newUser = { id: Date.now().toString(), name, email, phone, password: hashPassword(password) };
+            users.push(newUser);
+            DB.saveUsers(users);
 
-    function addTeam() {
-      const name = document.getElementById('team-name').value.trim();
-      const captain = document.getElementById('captain-name').value.trim();
-      const captainAge = document.getElementById('captain-age').value.trim();
-      const retained = document.getElementById('retained-player').value.trim();
-      const retainedAge = document.getElementById('retained-age').value.trim();
-      const maxPlayers = parseInt(document.getElementById('team-max-players').value) || 15;
-      if (!name) { showToast('Team name is required!', 'error'); return; }
+            sucEl.style.display = 'block';
+            setTimeout(() => switchTab('login'), 1500);
+          }
 
-      const emojis = ['🦁', '🐯', '🦅', '🐉', '🦊', '🦁', '⚡', '🔥', '🌊', '💎', '🏆', '⭐'];
+          function updateNavUser() {
+            if (!currentUser) return;
+            document.getElementById('nav-user-name').textContent = currentUser.name;
+            document.getElementById('nav-user-email').textContent = currentUser.email;
+            document.getElementById('nav-avatar').textContent = currentUser.name[0].toUpperCase();
+          }
 
-      if (editingTeamIdx > -1) {
-        const t = teams[editingTeamIdx];
-        t.name = name;
-        t.captain = captain;
-        t.captainAge = captainAge;
-        t.retained = retained;
-        t.retainedAge = retainedAge;
-        t.maxPlayers = maxPlayers;
-        t.logo = teamLogoData;
+          // ==================== CREATE AUCTION ====================
+          let newAuctionPlayers = [];
 
-        // Sync Captain and Retained Player in the squad
-        const currentPlayers = [];
-        if (captain) {
-          currentPlayers.push({ name: captain, role: 'Captain', age: captainAge || '—', price: 0, retained: true, isCaptain: true });
-        }
-        if (retained && (retained !== captain)) {
-          currentPlayers.push({ name: retained, role: 'Player', age: retainedAge || '—', price: 0, retained: true });
-        }
+          function goToStep(n) {
+            for (let i = 1; i <= 4; i++) {
+              const stepEl = document.getElementById(`create-step-${i}`);
+              if (stepEl) stepEl.style.display = i === n ? 'block' : 'none';
+              const stepInd = document.getElementById(`step-${i}`);
+              if (stepInd) {
+                stepInd.className = 'step';
+                if (i < n) stepInd.classList.add('done');
+                if (i === n) stepInd.classList.add('active');
+              }
+            }
+            if (n === 4) renderLaunchSummary();
+          }
 
-        // Keep existing non-retained players
-        const auctionedPlayers = t.players.filter(p => !p.retained && !p.isCaptain);
-        t.players = [...currentPlayers, ...auctionedPlayers];
+          function openTeamModal() {
+            const maxTeams = parseInt(document.getElementById('num-teams').value) || 8;
+            if (teams.length >= maxTeams && editingTeamIdx === -1) { showToast(`Max ${maxTeams} teams allowed!`, 'error'); return; }
 
-        showToast(`Team "${name}" updated! 🏟️`, 'success');
-      } else {
-        const newTeam = {
-          id: Date.now().toString(),
-          name,
-          logo: teamLogoData,
-          emoji: emojis[teams.length % emojis.length],
-          captain,
-          captainAge,
-          retained,
-          retainedAge,
-          maxPlayers,
-          players: [],
-          purse: parseFloat(document.getElementById('purse-amount').value) || 100,
-          spent: 0,
-        };
+            editingTeamIdx = -1;
+            document.getElementById('team-name').value = '';
+            document.getElementById('captain-name').value = '';
+            document.getElementById('captain-age').value = '';
+            document.getElementById('retained-player').value = '';
+            document.getElementById('retained-age').value = '';
+            document.getElementById('team-max-players').value = '15';
+            document.getElementById('team-logo-input').value = '';
+            document.getElementById('team-logo-preview-wrap').innerHTML = '<span style="font-size:2rem;">🏏</span><p>Click to upload team logo (optional)</p>';
+            document.querySelector('#team-modal h3').textContent = '🏟️ ADD TEAM';
+            document.querySelector('#team-modal .btn-gold').textContent = '✓ ADD TEAM';
+            teamLogoData = null;
+            openModal('team-modal');
+          }
 
-        if (captain) {
-          newTeam.players.push({ name: captain, role: 'Captain', age: captainAge || '—', price: 0, retained: true, isCaptain: true });
-        }
-        if (retained && (retained !== captain)) {
-          newTeam.players.push({ name: retained, role: 'Player', age: retainedAge || '—', price: 0, retained: true });
-        }
+          function editTeam(idx) {
+            const t = teams[idx];
+            editingTeamIdx = idx;
+            document.getElementById('team-name').value = t.name;
+            document.getElementById('captain-name').value = t.captain || '';
+            document.getElementById('captain-age').value = t.captainAge || '';
+            document.getElementById('retained-player').value = t.retained || '';
+            document.getElementById('retained-age').value = t.retainedAge || '';
+            document.getElementById('team-max-players').value = t.maxPlayers || 15;
+            teamLogoData = t.logo;
+            if (teamLogoData) {
+              document.getElementById('team-logo-preview-wrap').innerHTML = `<img src="${teamLogoData}" class="preview-img" alt="logo">`;
+            } else {
+              document.getElementById('team-logo-preview-wrap').innerHTML = `<span style="font-size:2rem;">${t.emoji || '🏏'}</span><p>Logo not set</p>`;
+            }
+            document.querySelector('#team-modal h3').textContent = '📝 EDIT TEAM';
+            const saveBtn = document.querySelector('#team-modal .btn-gold');
+            if (saveBtn) saveBtn.textContent = '✓ UPDATE TEAM';
+            openModal('team-modal');
+          }
 
-        teams.push(newTeam);
-        showToast(`Team "${name}" added! 🏟️`, 'success');
-      }
 
-      renderTeamsGrid();
-      closeModal('team-modal');
-    }
+          function handleTeamLogo(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              teamLogoData = ev.target.result;
+              document.getElementById('team-logo-preview-wrap').innerHTML = `<img src="${teamLogoData}" class="preview-img" alt="logo">`;
+            };
+            reader.readAsDataURL(file);
+          }
 
-    function removeTeam(idx) {
-      teams.splice(idx, 1);
-      renderTeamsGrid();
-    }
+          function handlePlayerPhoto(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              playerPhotoData = ev.target.result;
+              document.getElementById('player-photo-preview-wrap').innerHTML = `<img src="${playerPhotoData}" class="preview-img" alt="photo">`;
+            };
+            reader.readAsDataURL(file);
+          }
 
-    function renderTeamsGrid() {
-      const grid = document.getElementById('teams-grid');
-      const maxTeams = parseInt(document.getElementById('num-teams').value) || 8;
-      document.getElementById('teams-count').textContent = teams.length;
-      document.getElementById('teams-max').textContent = maxTeams;
+          function handleSponsorPhoto(e, index) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              sponsorImages[index] = ev.target.result;
+              document.getElementById(`sponsor-${index + 1}-preview`).innerHTML = `<img src="${ev.target.result}" style="width:100%;height:60px;object-fit:contain;border-radius:4px;">`;
+            };
+            reader.readAsDataURL(file);
+          }
 
-      if (teams.length === 0) {
-        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="icon">🏟️</div><p>No teams added yet. Click below!</p></div>';
-        return;
-      }
+          function addTeam() {
+            const name = document.getElementById('team-name').value.trim();
+            const captain = document.getElementById('captain-name').value.trim();
+            const captainAge = document.getElementById('captain-age').value.trim();
+            const retained = document.getElementById('retained-player').value.trim();
+            const retainedAge = document.getElementById('retained-age').value.trim();
+            const maxPlayers = parseInt(document.getElementById('team-max-players').value) || 15;
+            if (!name) { showToast('Team name is required!', 'error'); return; }
 
-      grid.innerHTML = teams.map((t, i) => `
+            const emojis = ['🦁', '🐯', '🦅', '🐉', '🦊', '🦁', '⚡', '🔥', '🌊', '💎', '🏆', '⭐'];
+
+            if (editingTeamIdx > -1) {
+              const t = teams[editingTeamIdx];
+              t.name = name;
+              t.captain = captain;
+              t.captainAge = captainAge;
+              t.retained = retained;
+              t.retainedAge = retainedAge;
+              t.maxPlayers = maxPlayers;
+              t.logo = teamLogoData;
+
+              // Sync Captain and Retained Player in the squad
+              const currentPlayers = [];
+              if (captain) {
+                currentPlayers.push({ name: captain, role: 'Captain', age: captainAge || '—', price: 0, retained: true, isCaptain: true });
+              }
+              if (retained && (retained !== captain)) {
+                currentPlayers.push({ name: retained, role: 'Player', age: retainedAge || '—', price: 0, retained: true });
+              }
+
+              // Keep existing non-retained players
+              const auctionedPlayers = t.players.filter(p => !p.retained && !p.isCaptain);
+              t.players = [...currentPlayers, ...auctionedPlayers];
+
+              showToast(`Team "${name}" updated! 🏟️`, 'success');
+            } else {
+              const newTeam = {
+                id: Date.now().toString(),
+                name,
+                logo: teamLogoData,
+                emoji: emojis[teams.length % emojis.length],
+                captain,
+                captainAge,
+                retained,
+                retainedAge,
+                maxPlayers,
+                players: [],
+                purse: parseFloat(document.getElementById('purse-amount').value) || 100,
+                spent: 0,
+              };
+
+              if (captain) {
+                newTeam.players.push({ name: captain, role: 'Captain', age: captainAge || '—', price: 0, retained: true, isCaptain: true });
+              }
+              if (retained && (retained !== captain)) {
+                newTeam.players.push({ name: retained, role: 'Player', age: retainedAge || '—', price: 0, retained: true });
+              }
+
+              teams.push(newTeam);
+              showToast(`Team "${name}" added! 🏟️`, 'success');
+            }
+
+            renderTeamsGrid();
+            closeModal('team-modal');
+          }
+
+          function removeTeam(idx) {
+            teams.splice(idx, 1);
+            renderTeamsGrid();
+          }
+
+          function renderTeamsGrid() {
+            const grid = document.getElementById('teams-grid');
+            const maxTeams = parseInt(document.getElementById('num-teams').value) || 8;
+            document.getElementById('teams-count').textContent = teams.length;
+            document.getElementById('teams-max').textContent = maxTeams;
+
+            if (teams.length === 0) {
+              grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="icon">🏟️</div><p>No teams added yet. Click below!</p></div>';
+              return;
+            }
+
+            grid.innerHTML = teams.map((t, i) => `
     <div class="team-card">
       <div class="team-logo-display">
         ${t.logo ? `<img src="${t.logo}" alt="${t.name}">` : t.emoji}
@@ -2998,106 +3048,126 @@
     </div>
   `).join('');
 
-      const addBtn = document.getElementById('add-team-btn');
-      if (addBtn) addBtn.style.display = teams.length >= maxTeams ? 'none' : 'inline-flex';
-    }
+            const addBtn = document.getElementById('add-team-btn');
+            if (addBtn) addBtn.style.display = teams.length >= maxTeams ? 'none' : 'inline-flex';
+          }
 
-    function openPlayerModal() {
-      editingPlayerIdx = -1;
-      document.getElementById('player-name').value = '';
-      document.getElementById('player-age').value = '';
-      document.getElementById('player-role').value = 'Batsman';
-      document.getElementById('player-base').value = '1.00';
-      document.getElementById('player-photo-input').value = '';
-      document.getElementById('player-photo-preview-wrap').innerHTML = '<span style="font-size:2rem;">🧑</span><p>Click to upload photo (optional)</p>';
-      document.querySelector('#player-modal h3').textContent = '👤 ADD PLAYER';
-      document.querySelector('#player-modal .btn-green').textContent = '✓ ADD PLAYER';
-      playerPhotoData = null;
-      openModal('player-modal');
-    }
+          function openPlayerModal() {
+            editingPlayerIdx = -1;
+            document.getElementById('player-name').value = '';
+            document.getElementById('player-age').value = '';
+            document.getElementById('player-role').value = 'Batsman';
+            document.getElementById('player-base').value = '1.00';
+            document.getElementById('player-photo-input').value = '';
+            document.getElementById('player-photo-preview-wrap').innerHTML = '<span style="font-size:2rem;">🧑</span><p>Click to upload photo (optional)</p>';
+            document.querySelector('#player-modal h3').textContent = '👤 ADD PLAYER';
+            document.querySelector('#player-modal .btn-green').textContent = '✓ ADD PLAYER';
+            playerPhotoData = null;
+            openModal('player-modal');
+          }
 
-    function editPlayer(idx) {
-      const p = newAuctionPlayers[idx];
-      editingPlayerIdx = idx;
-      document.getElementById('player-name').value = p.name;
-      document.getElementById('player-age').value = p.age;
-      document.getElementById('player-role').value = p.role;
-      document.getElementById('player-base').value = p.base.toFixed(2);
-      playerPhotoData = p.photo;
-      if (playerPhotoData) {
-        document.getElementById('player-photo-preview-wrap').innerHTML = `<img src="${playerPhotoData}" class="preview-img" alt="photo">`;
-      } else {
-        document.getElementById('player-photo-preview-wrap').innerHTML = `<span style="font-size:2rem;">🧑</span><p>Photo not set</p>`;
-      }
-      document.querySelector('#player-modal h3').textContent = '📝 EDIT PLAYER';
-      document.querySelector('#player-modal .btn-green').textContent = '✓ UPDATE PLAYER';
-      openModal('player-modal');
-    }
+          function editPlayer(idx) {
+            const p = newAuctionPlayers[idx];
+            editingPlayerIdx = idx;
+            document.getElementById('player-name').value = p.name;
+            document.getElementById('player-sno').value = p.sno || '';
+            document.getElementById('player-age').value = p.age;
+            document.getElementById('player-role').value = p.role;
+            document.getElementById('player-base').value = p.base.toFixed(2);
+            playerPhotoData = p.photo;
 
-    function addPlayer() {
-      const name = document.getElementById('player-name').value.trim();
-      const role = document.getElementById('player-role').value;
-      const age = document.getElementById('player-age').value;
-      const base = parseFloat(document.getElementById('player-base').value);
-      if (!name) { showToast('Player name is required!', 'error'); return; }
-      if (!age) { showToast('Age is required!', 'error'); return; }
+            if (playerPhotoData) {
+              document.getElementById('player-photo-preview-wrap').innerHTML = `<img src="${playerPhotoData}" class="preview-img" alt="photo">`;
+            } else {
+              document.getElementById('player-photo-preview-wrap').innerHTML = `<span style="font-size:2rem;">🧑</span><p>Photo not set</p>`;
+            }
+            document.querySelector('#player-modal h3').textContent = '📝 EDIT PLAYER';
+            const saveBtn = document.querySelector('#player-modal .btn-green');
+            if (saveBtn) saveBtn.textContent = '✓ UPDATE PLAYER';
+            openModal('player-modal');
+          }
 
-      if (editingPlayerIdx > -1) {
-        const p = newAuctionPlayers[editingPlayerIdx];
-        p.name = name;
-        p.role = role;
-        p.age = parseInt(age);
-        p.base = base;
-        p.photo = playerPhotoData;
-        showToast(`${name} updated! 🏏`, 'success');
-      } else {
-        newAuctionPlayers.push({ id: Date.now().toString(), name, role, age: parseInt(age), base, photo: playerPhotoData });
-        showToast(`${name} added to player pool! 🏏`, 'success');
-      }
 
-      renderPlayersTable();
-      closeModal('player-modal');
-    }
+          function addPlayer() {
+            const name = document.getElementById('player-name').value.trim();
+            const sno = document.getElementById('player-sno').value.trim();
+            const role = document.getElementById('player-role').value;
+            const age = document.getElementById('player-age').value || '25';
+            const base = parseFloat(document.getElementById('player-base').value) || 1.0;
 
-    function removePlayer(idx) {
-      newAuctionPlayers.splice(idx, 1);
-      renderPlayersTable();
-    }
+            if (!name) { showToast('Player name is required!', 'error'); return; }
+            if (!age) { showToast('Age is required!', 'error'); return; }
 
-    function renderPlayersTable() {
-      const tbody = document.getElementById('players-tbody');
-      document.getElementById('players-count').textContent = newAuctionPlayers.length;
+            if (editingPlayerIdx > -1) {
+              const p = newAuctionPlayers[editingPlayerIdx];
+              p.name = name;
+              p.sno = sno;
+              p.role = role;
+              p.age = parseInt(age);
+              p.base = base;
+              p.photo = playerPhotoData;
+              showToast(`${name} updated! 🏏`, 'success');
+            } else {
+              newAuctionPlayers.push({
+                id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+                name,
+                sno,
+                role,
+                age: parseInt(age),
+                base,
+                sno: sno || (newAuctionPlayers.length + 1).toString().padStart(2, '0'),
+                photo: playerPhotoData
+              });
 
-      if (newAuctionPlayers.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:32px;">No players added yet</td></tr>';
-        return;
-      }
+              showToast(`${name} added to player pool! 🏏`, 'success');
+            }
 
-      const roleClass = { 'Batsman': 'role-bat', 'Bowler': 'role-bowl', 'All-Rounder': 'role-all', 'Wicket-Keeper': 'role-wk' };
-      tbody.innerHTML = newAuctionPlayers.map((p, i) => `
+
+            renderPlayersTable();
+            closeModal('player-modal');
+          }
+
+          function removePlayer(idx) {
+            newAuctionPlayers.splice(idx, 1);
+            renderPlayersTable();
+          }
+
+          function renderPlayersTable() {
+            const tbody = document.getElementById('players-tbody');
+            document.getElementById('players-count').textContent = newAuctionPlayers.length;
+
+            if (newAuctionPlayers.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:32px;">No players added yet</td></tr>';
+              return;
+            }
+
+            const roleClass = { 'Batsman': 'role-bat', 'Bowler': 'role-bowl', 'All-Rounder': 'role-all', 'Wicket-Keeper': 'role-wk' };
+            tbody.innerHTML = newAuctionPlayers.map((p, i) => `
     <tr>
-      <td style="color:var(--text-muted);">${i + 1}</td>
+      <td style="color:var(--neon-gold);font-weight:bold;">${p.sno || (i + 1)}</td>
       <td style="font-weight:700;">${p.name}</td>
       <td><span class="role-badge ${roleClass[p.role] || 'role-bat'}">${p.role}</span></td>
       <td>${p.age}</td>
       <td style="color:var(--neon-green);font-family:'Orbitron',monospace;">₹${p.base}Cr</td>
       <td>${p.photo ? `<img src="${p.photo}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">` : '🧑'}</td>
-      <td>
-        <div style="display:flex;gap:8px;">
-          <button class="btn-edit" onclick="editPlayer(${i})">✎</button>
-          <button class="delete-btn" style="margin-top:0;" onclick="removePlayer(${i})">✕</button>
+      <td style="padding:12px;">
+        <div style="display:flex;gap:12px;">
+          <button class="btn-edit" style="padding:8px 14px;" onclick="editPlayer(${i})">✎ Edit</button>
+          <button class="delete-btn" style="padding:8px 14px;margin-top:0;" onclick="removePlayer(${i})">✕</button>
         </div>
       </td>
+
     </tr>
   `).join('');
-    }
+          }
 
-    function renderLaunchSummary() {
-      const name = document.getElementById('auction-name').value || 'Unnamed Auction';
-      const purse = document.getElementById('purse-amount').value || '100';
-      const inc = document.getElementById('bid-increment').value || '0.25';
 
-      document.getElementById('launch-summary').innerHTML = `
+          function renderLaunchSummary() {
+            const name = document.getElementById('auction-name').value || 'Unnamed Auction';
+            const purse = document.getElementById('purse-amount').value || '100';
+            const inc = document.getElementById('bid-increment').value || '0.25';
+
+            document.getElementById('launch-summary').innerHTML = `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div class="count-stat">
         <div class="val" style="font-size:1.4rem;">${name}</div>
@@ -3123,58 +3193,58 @@
     ${teams.length < 2 ? '<p style="color:var(--neon-red);margin-top:16px;">⚠️ Add at least 2 teams!</p>' : ''}
     ${newAuctionPlayers.length < 1 ? '<p style="color:var(--neon-red);margin-top:8px;">⚠️ Add at least 1 player!</p>' : ''}
   `;
-    }
+          }
 
-    function buildAuctionData(status = 'draft') {
-      return {
-        id: Date.now().toString(),
-        userId: currentUser.id,
-        name: document.getElementById('auction-name').value || 'My Auction',
-        season: document.getElementById('auction-season').value || '2025',
-        numTeams: parseInt(document.getElementById('num-teams').value) || 8,
-        purse: parseFloat(document.getElementById('purse-amount').value) || 100,
-        bidIncrement: parseFloat(document.getElementById('bid-increment').value) || 0.25,
-        teams: JSON.parse(JSON.stringify(teams)),
-        players: JSON.parse(JSON.stringify(newAuctionPlayers)),
-        sponsors: [...sponsorImages],
-        status,
-        createdAt: new Date().toISOString(),
-      };
-    }
+          function buildAuctionData(status = 'draft') {
+            return {
+              id: Date.now().toString(),
+              userId: currentUser.id,
+              name: document.getElementById('auction-name').value || 'My Auction',
+              season: document.getElementById('auction-season').value || '2025',
+              numTeams: parseInt(document.getElementById('num-teams').value) || 8,
+              purse: parseFloat(document.getElementById('purse-amount').value) || 100,
+              bidIncrement: parseFloat(document.getElementById('bid-increment').value) || 0.25,
+              teams: JSON.parse(JSON.stringify(teams)),
+              players: JSON.parse(JSON.stringify(newAuctionPlayers)),
+              sponsors: [...sponsorImages],
+              status,
+              createdAt: new Date().toISOString(),
+            };
+          }
 
-    function saveAuction() {
-      if (teams.length < 2) { showToast('Add at least 2 teams!'); return; }
-      const auction = buildAuctionData('draft');
-      const auctions = DB.auctions();
-      auctions.push(auction);
-      DB.saveAuctions(auctions);
-      showToast('Auction saved as draft! 💾');
-      showDashboard();
-    }
+          function saveAuction() {
+            if (teams.length < 2) { showToast('Add at least 2 teams!'); return; }
+            const auction = buildAuctionData('draft');
+            const auctions = DB.auctions();
+            auctions.push(auction);
+            DB.saveAuctions(auctions);
+            showToast('Auction saved as draft! 💾');
+            showDashboard();
+          }
 
-    function saveAndStartAuction() {
-      if (teams.length < 2) { showToast('Add at least 2 teams!'); return; }
-      if (newAuctionPlayers.length < 1) { showToast('Add at least 1 player!'); return; }
+          function saveAndStartAuction() {
+            if (teams.length < 2) { showToast('Add at least 2 teams!'); return; }
+            if (newAuctionPlayers.length < 1) { showToast('Add at least 1 player!'); return; }
 
-      const auction = buildAuctionData('live');
-      const auctions = DB.auctions();
-      auctions.push(auction);
-      DB.saveAuctions(auctions);
-      startAuction(auction);
-    }
+            const auction = buildAuctionData('live');
+            const auctions = DB.auctions();
+            auctions.push(auction);
+            DB.saveAuctions(auctions);
+            startAuction(auction);
+          }
 
-    // ==================== LOAD AUCTIONS ==================== 
-    function loadAuctions() {
-      if (!currentUser) return;
-      const auctions = DB.auctions().filter(a => a.userId === currentUser.id);
-      const container = document.getElementById('auctions-list-container');
+          // ==================== LOAD AUCTIONS ==================== 
+          function loadAuctions() {
+            if (!currentUser) return;
+            const auctions = DB.auctions().filter(a => a.userId === currentUser.id);
+            const container = document.getElementById('auctions-list-container');
 
-      if (auctions.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>No auctions yet. Create your first auction!</p></div>';
-        return;
-      }
+            if (auctions.length === 0) {
+              container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>No auctions yet. Create your first auction!</p></div>';
+              return;
+            }
 
-      container.innerHTML = auctions.reverse().map(a => `
+            container.innerHTML = auctions.reverse().map(a => `
     <div class="auction-item">
       <div class="auction-item-info">
         <h4>🏏 ${a.name}</h4>
@@ -3190,107 +3260,107 @@
       </div>
     </div>
   `).join('');
-    }
+          }
 
-    function openBroadcast(id) {
-      window.open(`watch.html?id=${id}`, '_blank');
-      showToast('Opening broadcast viewer... 📺');
-    }
+          function openBroadcast(id) {
+            window.open(`watch.html?id=${id}`, '_blank');
+            showToast('Opening broadcast viewer... 📺');
+          }
 
-    function resumeAuction(id) {
-      const auction = DB.auctions().find(a => a.id === id);
-      if (auction) startAuction(auction);
-    }
+          function resumeAuction(id) {
+            const auction = DB.auctions().find(a => a.id === id);
+            if (auction) startAuction(auction);
+          }
 
-    function viewAuctionResults(id) {
-      const auction = DB.auctions().find(a => a.id === id);
-      if (auction) { renderResults(auction); showScreen('results-screen'); }
-    }
+          function viewAuctionResults(id) {
+            const auction = DB.auctions().find(a => a.id === id);
+            if (auction) { renderResults(auction); showScreen('results-screen'); }
+          }
 
-    // ==================== AUCTION ENGINE ====================
-    function startAuction(auction) {
-      currentAuction = auction;
-      teams = JSON.parse(JSON.stringify(auction.teams));
-      unsoldTracker = {};
+          // ==================== AUCTION ENGINE ====================
+          function startAuction(auction) {
+            currentAuction = auction;
+            teams = JSON.parse(JSON.stringify(auction.teams));
+            unsoldTracker = {};
 
-      // Shuffle players
-      const shuffled = [...auction.players].sort(() => Math.random() - 0.5);
-      auctionState = {
-        players: shuffled,
-        currentIdx: -1,
-        currentBid: 0,
-        currentBidder: null,
-        soldCount: 0,
-        unsoldCount: 0,
-        unsoldPlayers: [],
-        isReshuffleRound: false,
-        auctionStarted: false,
-      };
+            // Shuffle players
+            const shuffled = [...auction.players].sort(() => Math.random() - 0.5);
+            auctionState = {
+              players: shuffled,
+              currentIdx: -1,
+              currentBid: 0,
+              currentBidder: null,
+              soldCount: 0,
+              unsoldCount: 0,
+              unsoldPlayers: [],
+              isReshuffleRound: false,
+              auctionStarted: false,
+            };
 
-      document.getElementById('auction-title-display').textContent = auction.name;
-      document.getElementById('sb-total').textContent = shuffled.length;
-      document.getElementById('sb-sold').textContent = '0';
-      document.getElementById('sb-unsold').textContent = '0';
-      document.getElementById('sb-remaining').textContent = shuffled.length;
+            document.getElementById('auction-title-display').textContent = auction.name;
+            document.getElementById('sb-total').textContent = shuffled.length;
+            document.getElementById('sb-sold').textContent = '0';
+            document.getElementById('sb-unsold').textContent = '0';
+            document.getElementById('sb-remaining').textContent = shuffled.length;
 
-      // Start Sponsor Toggling
-      currentSponsorIdx = -1; // Start before first so first call shows index 0
-      clearInterval(sponsorToggleInterval);
-      if (auction.sponsors && auction.sponsors.some(s => s)) {
-        // Ensure card is visible before first update
-        document.getElementById('premium-sponsor-card').style.display = 'flex';
-        updatePremiumSponsor();
-        sponsorToggleInterval = setInterval(updatePremiumSponsor, 5000);
-      } else {
-        document.getElementById('premium-sponsor-card').style.display = 'none';
-      }
+            // Start Sponsor Toggling
+            currentSponsorIdx = -1; // Start before first so first call shows index 0
+            clearInterval(sponsorToggleInterval);
+            if (auction.sponsors && auction.sponsors.some(s => s)) {
+              // Ensure card is visible before first update
+              document.getElementById('premium-sponsor-card').style.display = 'flex';
+              updatePremiumSponsor();
+              sponsorToggleInterval = setInterval(updatePremiumSponsor, 5000);
+            } else {
+              document.getElementById('premium-sponsor-card').style.display = 'none';
+            }
 
-      renderBiddingTeams();
-      resetStageUI();
+            renderBiddingTeams();
+            resetStageUI();
 
-      document.getElementById('next-player-btn').textContent = '▶ START AUCTION';
-      document.getElementById('next-player-btn').style.display = 'inline-flex';
-      document.getElementById('unsold-btn').style.display = 'none';
-      document.getElementById('reset-bid-btn').style.display = 'none';
-      document.getElementById('sold-btn').style.display = 'none';
+            document.getElementById('next-player-btn').textContent = '▶ START AUCTION';
+            document.getElementById('next-player-btn').style.display = 'inline-flex';
+            document.getElementById('unsold-btn').style.display = 'none';
+            document.getElementById('reset-bid-btn').style.display = 'none';
+            document.getElementById('sold-btn').style.display = 'none';
 
-      showScreen('auction-screen');
-    }
+            showScreen('auction-screen');
+          }
 
-    function updatePremiumSponsor() {
-      if (!currentAuction || !currentAuction.sponsors) return;
-      const sponsors = currentAuction.sponsors;
-      const validIndices = [];
-      sponsors.forEach((s, i) => { if (s) validIndices.push(i); });
+          function updatePremiumSponsor() {
+            if (!currentAuction || !currentAuction.sponsors) return;
+            const sponsors = currentAuction.sponsors;
+            const validIndices = [];
+            sponsors.forEach((s, i) => { if (s) validIndices.push(i); });
 
-      if (validIndices.length === 0) return;
+            if (validIndices.length === 0) return;
 
-      const card = document.getElementById('premium-sponsor-card');
-      const logo = document.getElementById('premium-sponsor-logo');
-      const tag = document.querySelector('.premium-sponsor-tag');
-      const labels = ['CUP SPONSOR', 'AUCTION SPONSOR', 'LED SPONSOR'];
+            const card = document.getElementById('premium-sponsor-card');
+            const logo = document.getElementById('premium-sponsor-logo');
+            const tag = document.querySelector('.premium-sponsor-tag');
+            const labels = ['CUP SPONSOR', 'AUCTION SPONSOR', 'LED SPONSOR'];
 
-      // Fade effect
-      card.classList.add('fade-out');
-      setTimeout(() => {
-        // Increment and show next
-        currentSponsorIdx = (currentSponsorIdx + 1) % validIndices.length;
-        const actualIdx = validIndices[currentSponsorIdx];
-        logo.innerHTML = `<img src="${sponsors[actualIdx]}" alt="Sponsor">`;
-        if (tag) tag.textContent = labels[actualIdx] || 'SPONSORS';
+            // Fade effect
+            card.classList.add('fade-out');
+            setTimeout(() => {
+              // Increment and show next
+              currentSponsorIdx = (currentSponsorIdx + 1) % validIndices.length;
+              const actualIdx = validIndices[currentSponsorIdx];
+              logo.innerHTML = `<img src="${sponsors[actualIdx]}" alt="Sponsor">`;
+              if (tag) tag.textContent = labels[actualIdx] || 'SPONSORS';
 
-        card.classList.remove('fade-out');
-        card.style.display = 'flex';
-        // Broadcast sync
-        if (currentAuction) syncLiveState();
-      }, 500);
-    }
+              card.classList.remove('fade-out');
+              card.style.display = 'flex';
+              // Broadcast sync
+              if (currentAuction) syncLiveState();
+            }, 500);
+          }
 
-    function renderBiddingTeams() {
-      const list = document.getElementById('teams-bid-list');
-      list.innerHTML = teams.map((t, i) => {
-        const isFull = t.players.length >= (t.maxPlayers || 6);
-        return `
+          function renderBiddingTeams() {
+            const list = document.getElementById('teams-bid-list');
+            list.innerHTML = teams.map((t, i) => {
+              const isFull = t.players.length >= (t.maxPlayers || 6);
+              return `
         <div class="team-bid-row ${isFull ? 'team-full' : ''}" id="team-bid-row-${i}">
           <div class="team-bid-left">
             <div class="team-mini-logo">
@@ -3304,355 +3374,384 @@
           <button class="bid-btn" id="bid-btn-${i}" onclick="placeBid(${i})" ${isFull ? 'disabled' : ''}>${isFull ? 'FULL' : 'BID'}</button>
         </div>
       `;
-      }).join('');
-    }
-
-    function resetStageUI() {
-      document.getElementById('stage-avatar').innerHTML = '🏏';
-      document.getElementById('stage-player-name').textContent = 'Ready...';
-      document.getElementById('stage-role').textContent = '—';
-      document.getElementById('stage-age').textContent = 'Age: —';
-      document.getElementById('stage-base').textContent = '₹ —';
-      document.getElementById('current-bid-info').textContent = 'No bids yet';
-      document.getElementById('stage-player-num').textContent = '—';
-      document.getElementById('stage-current-bid').textContent = '—';
-      document.getElementById('countdown-timer').textContent = '30';
-      document.getElementById('countdown-timer').className = 'val countdown';
-      clearInterval(countdownInterval);
-    }
-
-    function startOrNext() {
-      clearInterval(countdownInterval);
-
-      let nextIdx = auctionState.currentIdx + 1;
-      const playersPool = auctionState.players;
-
-      if (nextIdx >= playersPool.length) {
-        if (auctionState.unsoldPlayers.length > 0) {
-          const teamsWithBudget = teams.filter(t => (t.purse - t.spent) > 0.2 && t.players.length < (t.maxPlayers || 6));
-          if (teamsWithBudget.length > 0) {
-            auctionState.players = [...auctionState.unsoldPlayers].sort(() => Math.random() - 0.5);
-            auctionState.currentIdx = -1;
-            auctionState.unsoldPlayers = [];
-            auctionState.isReshuffleRound = true;
-            nextIdx = 0;
-            showToast('🔄 Reshuffling unsold players...', 'info');
-            document.getElementById('next-player-btn').textContent = '▶ NEXT PLAYER';
-          } else {
-            auctionFinished();
-            return;
+            }).join('');
           }
-        } else {
-          auctionFinished();
-          return;
-        }
-      }
 
-      const player = auctionState.players[nextIdx];
+          function resetStageUI() {
+            document.getElementById('stage-avatar').innerHTML = '🏏';
+            document.getElementById('stage-player-name').textContent = 'Ready...';
+            document.getElementById('stage-role').textContent = '—';
+            document.getElementById('stage-age').textContent = 'Age: —';
+            document.getElementById('stage-base').textContent = '₹ —';
+            document.getElementById('current-bid-info').textContent = 'No bids yet';
+            document.getElementById('stage-player-num').textContent = '—';
+            document.getElementById('stage-current-bid').textContent = '—';
+            document.getElementById('countdown-timer').textContent = '30';
+            document.getElementById('countdown-timer').className = 'val countdown';
+            clearInterval(countdownInterval);
+          }
 
-      // Rule: Auto-assign if unsold twice (3rd time appearing)
-      const unsoldCount = unsoldTracker[player.id] || 0;
-      if (unsoldCount >= 2) {
-        autoAssignPlayer(player, nextIdx);
-        return;
-      }
+          function startOrNext() {
+            clearInterval(countdownInterval);
 
-      auctionState.currentIdx = nextIdx;
-      auctionState.currentBid = player.base;
-      auctionState.currentBidder = null;
-      auctionState.auctionStarted = true;
+            let nextIdx = auctionState.currentIdx + 1;
+            const playersPool = auctionState.players;
 
-      // Update player display
-      document.getElementById('stage-player-name').textContent = player.name;
-      const roleClass = { 'Batsman': 'role-bat', 'Bowler': 'role-bowl', 'All-Rounder': 'role-all', 'Wicket-Keeper': 'role-wk' };
-      document.getElementById('stage-role').className = `role-badge ${roleClass[player.role] || 'role-bat'}`;
-      document.getElementById('stage-role').textContent = player.role;
-      document.getElementById('stage-age').textContent = `Age: ${player.age}`;
-      document.getElementById('stage-base').textContent = `₹ ${player.base}Cr`;
-      document.getElementById('current-bid-info').textContent = 'No bids yet — Place your bid!';
-      document.getElementById('stage-player-num').textContent = nextIdx + 1;
-      document.getElementById('stage-current-bid').textContent = `₹${player.base}Cr`;
+            if (nextIdx >= playersPool.length) {
+              auctionFinished();
+              return;
+            }
 
-      if (player.photo) {
-        document.getElementById('stage-avatar').innerHTML = `<img src="${player.photo}" alt="${player.name}">`;
-      } else {
-        const roleEmoji = { 'Batsman': '🏏', 'Bowler': '🎳', 'All-Rounder': '⭐', 'Wicket-Keeper': '🧤' };
-        document.getElementById('stage-avatar').textContent = roleEmoji[player.role] || '🏏';
-      }
+            const player = auctionState.players[nextIdx];
 
-      // Progress
-      const total = auctionState.isReshuffleRound ? auctionState.players.length : currentAuction.players.length;
-      const done = auctionState.soldCount + auctionState.unsoldCount;
-      const pct = Math.round(done / total * 100);
-      document.getElementById('progress-bar').style.width = pct + '%';
-      document.getElementById('prog-label').textContent = `${done} / ${total} players`;
-      document.getElementById('prog-pct').textContent = pct + '%';
+            // Rule: Auto-assign if unsold twice (3rd time appearing)
+            const unsoldCount = unsoldTracker[player.id] || 0;
+            if (unsoldCount >= 2) {
+              autoAssignPlayer(player, nextIdx);
+              return;
+            }
 
-      // Enable/Disable bid buttons based on purse AND max players
-      teams.forEach((t, i) => {
-        const btn = document.getElementById(`bid-btn-${i}`);
-        if (btn) {
-          const isFull = t.players.length >= (t.maxPlayers || 6);
-          const canAfford = (t.purse - t.spent) >= player.base;
-          btn.disabled = isFull || !canAfford;
-          if (isFull) btn.textContent = 'FULL';
-        }
-      });
+            auctionState.currentIdx = nextIdx;
+            auctionState.currentBid = player.base;
+            auctionState.currentBidder = null;
+            auctionState.auctionStarted = true;
 
-      // Show controls
-      document.getElementById('next-player-btn').style.display = 'none';
-      document.getElementById('unsold-btn').style.display = 'inline-flex';
-      document.getElementById('reset-bid-btn').style.display = 'inline-flex';
-      document.getElementById('sold-btn').style.display = 'none';
+            // Update player display
+            document.getElementById('stage-player-name').textContent = player.name;
+            const roleClass = { 'Batsman': 'role-bat', 'Bowler': 'role-bowl', 'All-Rounder': 'role-all', 'Wicket-Keeper': 'role-wk' };
+            document.getElementById('stage-role').className = `role-badge ${roleClass[player.role] || 'role-bat'}`;
+            document.getElementById('stage-role').textContent = player.role;
+            document.getElementById('stage-age').textContent = `Age: ${player.age}`;
+            document.getElementById('stage-base').textContent = `₹ ${player.base}Cr`;
+            document.getElementById('current-bid-info').textContent = 'No bids yet — Place your bid!';
+            document.getElementById('stage-player-num').textContent = (player.sno !== undefined && player.sno !== '') ? player.sno : (nextIdx + 1);
+            document.getElementById('stage-current-bid').textContent = `₹${player.base}Cr`;
 
-      // Reset bid log
-      document.getElementById('bid-log-entries').innerHTML = '';
+            if (player.photo) {
+              document.getElementById('stage-avatar').innerHTML = `<img src="${player.photo}" alt="${player.name}">`;
+            } else {
+              const roleEmoji = { 'Batsman': '🏏', 'Bowler': '🎳', 'All-Rounder': '⭐', 'Wicket-Keeper': '🧤' };
+              document.getElementById('stage-avatar').textContent = roleEmoji[player.role] || '🏏';
+            }
 
-      // Start countdown
-      startCountdown();
+            // Progress
+            const total = auctionState.isReshuffleRound ? auctionState.players.length : currentAuction.players.length;
+            const done = auctionState.soldCount + auctionState.unsoldCount;
+            const pct = Math.round(done / total * 100);
+            document.getElementById('progress-bar').style.width = pct + '%';
+            document.getElementById('prog-label').textContent = `${done} / ${total} players`;
+            document.getElementById('prog-pct').textContent = pct + '%';
 
-      // Sync
-      syncLiveState();
-    }
+            // Enable/Disable bid buttons based on purse AND max players
+            teams.forEach((t, i) => {
+              const btn = document.getElementById(`bid-btn-${i}`);
+              if (btn) {
+                const isFull = t.players.length >= (t.maxPlayers || 8);
+                const canAfford = (t.purse - t.spent) >= player.base;
+                btn.disabled = isFull || !canAfford;
+                if (isFull) btn.textContent = 'FULL';
+              }
+            });
 
-    function startCountdown() {
-      countdownVal = 30;
-      document.getElementById('countdown-timer').textContent = countdownVal;
-      document.getElementById('countdown-timer').className = 'val countdown';
-      clearInterval(countdownInterval);
+            // Show controls
+            document.getElementById('next-player-btn').style.display = 'none';
+            document.getElementById('unsold-btn').style.display = 'inline-flex';
+            document.getElementById('reset-bid-btn').style.display = 'inline-flex';
+            document.getElementById('sold-btn').style.display = 'none';
 
-      countdownInterval = setInterval(() => {
-        countdownVal--;
-        document.getElementById('countdown-timer').textContent = countdownVal;
+            // Reset bid log
+            document.getElementById('bid-log-entries').innerHTML = '';
 
-        if (countdownVal <= 10) {
-          document.getElementById('countdown-timer').className = 'val countdown urgent';
-        }
+            // Start countdown
+            startCountdown();
 
-        if (countdownVal <= 0) {
-          clearInterval(countdownInterval);
-          // Auto-finalize
-          if (auctionState.currentBidder !== null) {
+            // Sync
+            syncLiveState();
+          }
+
+          function startCountdown() {
+            countdownVal = 30;
+            document.getElementById('countdown-timer').textContent = countdownVal;
+            document.getElementById('countdown-timer').className = 'val countdown';
+            clearInterval(countdownInterval);
+
+            countdownInterval = setInterval(() => {
+              countdownVal--;
+              document.getElementById('countdown-timer').textContent = countdownVal;
+
+              if (countdownVal <= 10) {
+                document.getElementById('countdown-timer').className = 'val countdown urgent';
+              }
+
+              if (countdownVal <= 0) {
+                clearInterval(countdownInterval);
+                // Auto-finalize
+                if (auctionState.currentBidder !== null) {
+                  confirmSold();
+                } else {
+                  markUnsold();
+                }
+              }
+
+              // Sync every second for countdown as a 'timer' event (throttled)
+              syncLiveState('timer');
+            }, 1000);
+          }
+
+
+          function checkAuctionCompletion() {
+            // 1. Are all players processed?
+            const remainingPlayers = auctionState.players.length - (auctionState.currentIdx + 1);
+            if (remainingPlayers <= 0) {
+              auctionFinished();
+              return true;
+            }
+
+            // 2. Are all teams at their max limit?
+            const allFull = teams.every(t => t.players.length >= (t.maxPlayers || 8));
+            if (allFull) {
+              showToast('🏁 All teams have reached their squad limit!', 'info');
+              auctionFinished();
+              return true;
+            }
+
+            // 3. Can any team afford the next players?
+            const remainingPool = auctionState.players.slice(auctionState.currentIdx + 1);
+            const minBasePrice = Math.min(...remainingPool.map(p => p.base || 0.2));
+
+            const potentialBuyers = teams.filter(t => {
+              const isNotFull = t.players.length < (t.maxPlayers || 8);
+              const canAfford = (t.purse - t.spent) >= minBasePrice;
+              return isNotFull && canAfford;
+            });
+
+            if (potentialBuyers.length === 0) {
+              showToast('🏁 No team can afford the remaining players!', 'info');
+              auctionFinished();
+              return true;
+            }
+
+            return false;
+          }
+
+          function autoAssignPlayer(player, idx) {
+            const eligibleTeams = teams.filter(t => (t.purse - t.spent) >= player.base && t.players.length < (t.maxPlayers || 8));
+
+            if (eligibleTeams.length === 0) {
+              showToast(`No eligible teams for auto-assigning ${player.name}`, 'error');
+              auctionState.currentIdx = idx;
+              markUnsold();
+              return;
+            }
+
+            const randomTeam = eligibleTeams[Math.floor(Math.random() * eligibleTeams.length)];
+            const teamIdx = teams.indexOf(randomTeam);
+
+            auctionState.currentIdx = idx;
+            auctionState.currentBid = player.base;
+            auctionState.currentBidder = teamIdx;
+
+            showToast(`🤖 Auto-assigning ${player.name} to ${randomTeam.name} (3rd Round Rule)`, 'success');
             confirmSold();
-          } else {
-            markUnsold();
           }
-        }
 
-        // Sync every second for countdown
-        syncLiveState();
-      }, 1000);
-    }
+          function placeBid(teamIdx) {
+            if (!auctionState.auctionStarted) return;
+            const team = teams[teamIdx];
+            const player = auctionState.players[auctionState.currentIdx];
 
-    function autoAssignPlayer(player, idx) {
-      const eligibleTeams = teams.filter(t => (t.purse - t.spent) >= player.base && t.players.length < (t.maxPlayers || 6));
+            // Rule: Max Players check
+            if (team.players.length >= (team.maxPlayers || 6)) {
+              showToast(`🚫 ${team.name} has reached the max player limit!`, 'error');
+              return;
+            }
 
-      if (eligibleTeams.length === 0) {
-        showToast(`No eligible teams for auto-assigning ${player.name}`, 'error');
-        auctionState.currentIdx = idx;
-        markUnsold();
-        return;
-      }
+            const increment = parseFloat(currentAuction.bidIncrement) || 0.25;
+            const nextBid = auctionState.currentBidder === null ? player.base : +(auctionState.currentBid + increment).toFixed(2);
 
-      const randomTeam = eligibleTeams[Math.floor(Math.random() * eligibleTeams.length)];
-      const teamIdx = teams.indexOf(randomTeam);
+            if ((team.purse - team.spent) < nextBid) { showToast('Insufficient purse!', 'error'); return; }
 
-      auctionState.currentIdx = idx;
-      auctionState.currentBid = player.base;
-      auctionState.currentBidder = teamIdx;
+            auctionState.currentBid = nextBid;
+            auctionState.currentBidder = teamIdx;
 
-      showToast(`🤖 Auto-assigning ${player.name} to ${randomTeam.name} (3rd Round Rule)`, 'success');
-      confirmSold();
-    }
+            // Update UI
+            document.getElementById('current-bid-info').textContent = `${team.name}: ₹${nextBid}Cr`;
+            document.getElementById('stage-current-bid').textContent = `₹${nextBid}Cr`;
 
-    function placeBid(teamIdx) {
-      if (!auctionState.auctionStarted) return;
-      const team = teams[teamIdx];
-      const player = auctionState.players[auctionState.currentIdx];
+            // Highlight highest bidder
+            document.querySelectorAll('.team-bid-row').forEach((row, i) => {
+              row.classList.toggle('highest', i === teamIdx);
+            });
 
-      // Rule: Max Players check
-      if (team.players.length >= (team.maxPlayers || 6)) {
-        showToast(`🚫 ${team.name} has reached the max player limit!`, 'error');
-        return;
-      }
+            const nextRound = +(nextBid + increment).toFixed(2);
+            teams.forEach((t, i) => {
+              const btn = document.getElementById(`bid-btn-${i}`);
+              if (btn) {
+                const isFull = t.players.length >= (t.maxPlayers || 8);
+                const canAfford = (t.purse - t.spent) >= nextRound;
+                btn.disabled = (isFull || !canAfford) && i !== teamIdx;
+                if (isFull) btn.textContent = 'FULL';
+              }
+            });
 
-      const increment = parseFloat(currentAuction.bidIncrement) || 0.25;
-      const nextBid = auctionState.currentBidder === null ? player.base : +(auctionState.currentBid + increment).toFixed(2);
+            // Log
+            addBidLog(`${team.name} bids ₹${nextBid}Cr`);
 
-      if ((team.purse - team.spent) < nextBid) { showToast('Insufficient purse!', 'error'); return; }
+            // Show sold btn
+            document.getElementById('sold-btn').style.display = 'inline-flex';
 
-      auctionState.currentBid = nextBid;
-      auctionState.currentBidder = teamIdx;
+            // Reset countdown
+            startCountdown();
+            showToast(`💰 ${team.name}: ₹${nextBid}Cr`);
 
-      // Update UI
-      document.getElementById('current-bid-info').textContent = `${team.name}: ₹${nextBid}Cr`;
-      document.getElementById('stage-current-bid').textContent = `₹${nextBid}Cr`;
+            // Sync
+            syncLiveState();
+          }
 
-      // Highlight highest bidder
-      document.querySelectorAll('.team-bid-row').forEach((row, i) => {
-        row.classList.toggle('highest', i === teamIdx);
-      });
+          function addBidLog(text) {
+            const entries = document.getElementById('bid-log-entries');
+            const el = document.createElement('div');
+            el.className = 'bid-log-entry';
+            el.innerHTML = `<div class="dot"></div>${text}`;
+            entries.insertBefore(el, entries.firstChild);
+          }
 
-      const nextRound = +(nextBid + increment).toFixed(2);
-      teams.forEach((t, i) => {
-        const btn = document.getElementById(`bid-btn-${i}`);
-        if (btn) {
-          const isFull = t.players.length >= (t.maxPlayers || 6);
-          const canAfford = (t.purse - t.spent) >= nextRound;
-          btn.disabled = (isFull || !canAfford) && i !== teamIdx;
-          if (isFull) btn.textContent = 'FULL';
-        }
-      });
+          function resetCurrentBid() {
+            if (!auctionState.auctionStarted) return;
+            const player = auctionState.players[auctionState.currentIdx];
+            auctionState.currentBid = player.base;
+            auctionState.currentBidder = null;
 
-      // Log
-      addBidLog(`${team.name} bids ₹${nextBid}Cr`);
+            document.getElementById('current-bid-info').textContent = 'Bid reset — Place your bid!';
+            document.getElementById('stage-current-bid').textContent = `₹${player.base}Cr`;
+            document.getElementById('sold-btn').style.display = 'none';
+            document.querySelectorAll('.team-bid-row').forEach(r => r.classList.remove('highest'));
 
-      // Show sold btn
-      document.getElementById('sold-btn').style.display = 'inline-flex';
+            teams.forEach((t, i) => {
+              const btn = document.getElementById(`bid-btn-${i}`);
+              if (btn) btn.disabled = (t.purse - t.spent) < player.base;
+            });
 
-      // Reset countdown
-      startCountdown();
-      showToast(`💰 ${team.name}: ₹${nextBid}Cr`);
+            startCountdown();
+            addBidLog('Bid reset');
 
-      // Sync
-      syncLiveState();
-    }
+            // Sync
+            syncLiveState();
+          }
 
-    function addBidLog(text) {
-      const entries = document.getElementById('bid-log-entries');
-      const el = document.createElement('div');
-      el.className = 'bid-log-entry';
-      el.innerHTML = `<div class="dot"></div>${text}`;
-      entries.insertBefore(el, entries.firstChild);
-    }
+          function markUnsold() {
+            clearInterval(countdownInterval);
+            const player = auctionState.players[auctionState.currentIdx];
 
-    function resetCurrentBid() {
-      if (!auctionState.auctionStarted) return;
-      const player = auctionState.players[auctionState.currentIdx];
-      auctionState.currentBid = player.base;
-      auctionState.currentBidder = null;
+            // Update unsold tracker
+            unsoldTracker[player.id] = (unsoldTracker[player.id] || 0) + 1;
 
-      document.getElementById('current-bid-info').textContent = 'Bid reset — Place your bid!';
-      document.getElementById('stage-current-bid').textContent = `₹${player.base}Cr`;
-      document.getElementById('sold-btn').style.display = 'none';
-      document.querySelectorAll('.team-bid-row').forEach(r => r.classList.remove('highest'));
+            // auctionState.unsoldPlayers.push(player); // REMOVED: Unsold stay unsold.
+            auctionState.unsoldCount++;
 
-      teams.forEach((t, i) => {
-        const btn = document.getElementById(`bid-btn-${i}`);
-        if (btn) btn.disabled = (t.purse - t.spent) < player.base;
-      });
+            document.getElementById('sb-unsold').textContent = auctionState.unsoldCount;
+            document.getElementById('sb-remaining').textContent =
+              auctionState.players.length - auctionState.currentIdx - 1;
 
-      startCountdown();
-      addBidLog('Bid reset');
+            showSoldAnimation('UNSOLD', player.name, '—', false);
+            showToast(`⚠️ ${player.name} goes UNSOLD!`, 'error');
 
-      // Sync
-      syncLiveState();
-    }
 
-    function markUnsold() {
-      clearInterval(countdownInterval);
-      const player = auctionState.players[auctionState.currentIdx];
+            setTimeout(() => {
+              hideSoldOverlay();
+              document.getElementById('next-player-btn').textContent = '▶ NEXT PLAYER';
+              document.getElementById('next-player-btn').style.display = 'inline-flex';
+              document.getElementById('unsold-btn').style.display = 'none';
+              document.getElementById('reset-bid-btn').style.display = 'none';
+              document.getElementById('sold-btn').style.display = 'none';
+              teams.forEach((_, i) => { const b = document.getElementById(`bid-btn-${i}`); if (b) b.disabled = true; });
+              // Set broadcast to waiting ONLY if not finished
+              if (!checkAuctionCompletion()) {
+                syncLiveState('waiting');
+              }
+            }, 2500);
 
-      // Update unsold tracker
-      unsoldTracker[player.id] = (unsoldTracker[player.id] || 0) + 1;
 
-      auctionState.unsoldPlayers.push(player);
-      auctionState.unsoldCount++;
+            // Sync
+            syncLiveState('unsold');
+          }
 
-      document.getElementById('sb-unsold').textContent = auctionState.unsoldCount;
-      document.getElementById('sb-remaining').textContent =
-        auctionState.players.length - auctionState.currentIdx - 1;
+          function confirmSold() {
+            if (auctionState.currentBidder === null) { showToast('No bid placed yet!'); return; }
+            clearInterval(countdownInterval);
 
-      showSoldAnimation('UNSOLD', player.name, '—', false);
-      showToast(`${player.name} goes UNSOLD!`);
+            const player = auctionState.players[auctionState.currentIdx];
+            const teamIdx = auctionState.currentBidder;
+            const team = teams[teamIdx];
+            const price = auctionState.currentBid;
 
-      setTimeout(() => {
-        hideSoldOverlay();
-        document.getElementById('next-player-btn').textContent = '▶ NEXT PLAYER';
-        document.getElementById('next-player-btn').style.display = 'inline-flex';
-        document.getElementById('unsold-btn').style.display = 'none';
-        document.getElementById('reset-bid-btn').style.display = 'none';
-        document.getElementById('sold-btn').style.display = 'none';
-        teams.forEach((_, i) => { const b = document.getElementById(`bid-btn-${i}`); if (b) b.disabled = true; });
-        // Set broadcast to waiting
-        syncLiveState('waiting');
-      }, 2500);
+            // Rule: Final Max Players check (Safety)
+            if (team.players.length >= (team.maxPlayers || 8)) {
+              showToast(`🚫 FAILED: ${team.name} reached squad limit!`, 'error');
+              resetCurrentBid();
+              return;
+            }
 
-      // Sync
-      syncLiveState('unsold');
-    }
+            // Assign player to team
+            team.players.push({ ...player, price, retained: false });
+            team.spent += price;
 
-    function confirmSold() {
-      if (auctionState.currentBidder === null) { showToast('No bid placed yet!'); return; }
-      clearInterval(countdownInterval);
+            auctionState.soldCount++;
+            document.getElementById('sb-sold').textContent = auctionState.soldCount;
+            document.getElementById('sb-remaining').textContent =
+              auctionState.players.length - auctionState.currentIdx - 1;
 
-      const player = auctionState.players[auctionState.currentIdx];
-      const teamIdx = auctionState.currentBidder;
-      const team = teams[teamIdx];
-      const price = auctionState.currentBid;
+            // Update purse display
+            document.getElementById(`purse-${teamIdx}`).textContent = (team.purse - team.spent).toFixed(2);
+            document.getElementById(`count-${teamIdx}`).textContent = team.players.length;
 
-      // Rule: Final Max Players check (Safety)
-      if (team.players.length >= (team.maxPlayers || 6)) {
-        showToast(`🚫 FAILED: ${team.name} reached squad limit!`, 'error');
-        resetCurrentBid();
-        return;
-      }
+            showSoldAnimation('SOLD!', player.name, `₹${price}Cr → ${team.name}`, true);
+            showToast(`🏆 SOLD: ${player.name} to ${team.name}!`, 'success');
+            launchConfetti();
 
-      // Assign player to team
-      team.players.push({ ...player, price, retained: false });
-      team.spent += price;
 
-      auctionState.soldCount++;
-      document.getElementById('sb-sold').textContent = auctionState.soldCount;
-      document.getElementById('sb-remaining').textContent =
-        auctionState.players.length - auctionState.currentIdx - 1;
+            setTimeout(() => {
+              hideSoldOverlay();
+              document.getElementById('next-player-btn').textContent = '▶ NEXT PLAYER';
+              document.getElementById('next-player-btn').style.display = 'inline-flex';
+              document.getElementById('unsold-btn').style.display = 'none';
+              document.getElementById('reset-bid-btn').style.display = 'none';
+              document.getElementById('sold-btn').style.display = 'none';
+              teams.forEach((_, i) => { const b = document.getElementById(`bid-btn-${i}`); if (b) b.disabled = true; });
+              // Set broadcast to waiting ONLY if not finished
+              if (!checkAuctionCompletion()) {
+                syncLiveState('waiting');
+              }
+            }, 2800);
 
-      // Update purse display
-      document.getElementById(`purse-${teamIdx}`).textContent = (team.purse - team.spent).toFixed(2);
-      document.getElementById(`count-${teamIdx}`).textContent = team.players.length;
 
-      showSoldAnimation('SOLD!', player.name, `₹${price}Cr → ${team.name}`, true);
-      launchConfetti();
+            updateAuctionInDB();
 
-      setTimeout(() => {
-        hideSoldOverlay();
-        document.getElementById('next-player-btn').textContent = '▶ NEXT PLAYER';
-        document.getElementById('next-player-btn').style.display = 'inline-flex';
-        document.getElementById('unsold-btn').style.display = 'none';
-        document.getElementById('reset-bid-btn').style.display = 'none';
-        document.getElementById('sold-btn').style.display = 'none';
-        teams.forEach((_, i) => { const b = document.getElementById(`bid-btn-${i}`); if (b) b.disabled = true; });
-        // Set broadcast to waiting
-        syncLiveState('waiting');
-      }, 2800);
+            // Sync
+            syncLiveState('sold');
+          }
 
-      updateAuctionInDB();
+          function showSoldAnimation(title, name, detail, isSold) {
+            document.getElementById('sold-text-display').textContent = title;
+            document.getElementById('sold-text-display').style.color = isSold ? 'var(--neon-gold)' : 'var(--neon-red)';
+            document.getElementById('sold-player-name').textContent = name;
+            document.getElementById('sold-price-display').textContent = isSold ? detail.split(' → ')[0] : '—';
+            document.getElementById('sold-team-display').textContent = isSold ? detail.split(' → ')[1] : 'No bids received';
+            document.getElementById('sold-overlay').classList.add('show');
+          }
 
-      // Sync
-      syncLiveState('sold');
-    }
+          function hideSoldOverlay() {
+            document.getElementById('sold-overlay').classList.remove('show');
+          }
 
-    function showSoldAnimation(title, name, detail, isSold) {
-      document.getElementById('sold-text-display').textContent = title;
-      document.getElementById('sold-text-display').style.color = isSold ? 'var(--neon-gold)' : 'var(--neon-red)';
-      document.getElementById('sold-player-name').textContent = name;
-      document.getElementById('sold-price-display').textContent = isSold ? detail.split(' → ')[0] : '—';
-      document.getElementById('sold-team-display').textContent = isSold ? detail.split(' → ')[1] : 'No bids received';
-      document.getElementById('sold-overlay').classList.add('show');
-    }
-
-    function hideSoldOverlay() {
-      document.getElementById('sold-overlay').classList.remove('show');
-    }
-
-    function launchConfetti() {
-      const container = document.getElementById('confetti-container');
-      container.innerHTML = '';
-      const colors = ['#FFD700', '#00FFFF', '#FF3366', '#00FF88', '#BF5FFF'];
-      for (let i = 0; i < 60; i++) {
-        const el = document.createElement('div');
-        el.className = 'confetti-piece';
-        el.style.cssText = `
+          function launchConfetti() {
+            const container = document.getElementById('confetti-container');
+            container.innerHTML = '';
+            const colors = ['#FFD700', '#00FFFF', '#FF3366', '#00FF88', '#BF5FFF'];
+            for (let i = 0; i < 60; i++) {
+              const el = document.createElement('div');
+              el.className = 'confetti-piece';
+              el.style.cssText = `
       left: ${Math.random() * 100}%;
       top: -20px;
       background: ${colors[Math.floor(Math.random() * colors.length)]};
@@ -3662,50 +3761,67 @@
       animation-delay: ${Math.random() * 1}s;
       animation-duration: ${Math.random() * 2 + 2}s;
     `;
-        container.appendChild(el);
-      }
-    }
+              container.appendChild(el);
+            }
+          }
 
-    function auctionFinished() {
-      clearInterval(countdownInterval);
-      clearInterval(sponsorToggleInterval);
-      showToast('🏆 AUCTION COMPLETE!');
+          function auctionFinished() {
+            if (auctionState.isFinished) return; // Prevent double trigger
+            auctionState.isFinished = true;
+            auctionState.auctionStarted = false;
 
-      // Save final results
-      updateAuctionInDB('done');
+            clearInterval(countdownInterval);
+            clearInterval(sponsorToggleInterval);
+            
+            // Show Cinematic Overlay
+            const overlay = document.getElementById('completion-overlay');
+            const timerEl = document.getElementById('completion-timer');
+            overlay.style.display = 'flex';
 
-      setTimeout(() => {
-        renderResults(currentAuction, teams);
-        showScreen('results-screen');
-      }, 1000);
+            // Save final results for standalone page and DB
+            const finalData = {
+              teams: JSON.parse(JSON.stringify(teams)),
+              auction: JSON.parse(JSON.stringify(currentAuction)),
+              sponsors: sponsorImages,
+              timestamp: Date.now()
+            };
+            localStorage.setItem('ipa_final_results', JSON.stringify(finalData));
+            localStorage.setItem('ipa_admin_mode', 'true');
+            updateAuctionInDB('done');
 
-      // Final Sync for Broadcast
-      syncLiveState('finished');
-    }
+            // Final Sync for Broadcast
+            syncLiveState('finished');
 
-    function updateAuctionInDB(status = 'live') {
-      const auctions = DB.auctions();
-      const idx = auctions.findIndex(a => a.id === currentAuction.id);
-      if (idx !== -1) {
-        auctions[idx].teams = JSON.parse(JSON.stringify(teams));
-        auctions[idx].status = status;
-        DB.saveAuctions(auctions);
-        currentAuction.teams = teams;
-      }
-    }
+            setTimeout(() => {
+              window.location.href = 'results.html';
+            }, 1500);
+          }
 
-    // ==================== RESULTS ====================
-    function renderResults(auction, liveTeams = null) {
-      const aTeams = liveTeams || auction.teams;
-      document.getElementById('results-subtitle').textContent =
-        `${auction.name} · ${aTeams.length} teams · ${auction.players.length} players`;
 
-      const grid = document.getElementById('results-grid');
 
-      grid.innerHTML = aTeams.map((t, i) => {
-        const auctionedPlayers = t.players.filter(p => !p.retained);
-        const spent = t.spent || auctionedPlayers.reduce((s, p) => s + (p.price || 0), 0);
-        return `
+          function updateAuctionInDB(status = 'live') {
+            const auctions = DB.auctions();
+            const idx = auctions.findIndex(a => a.id === currentAuction.id);
+            if (idx !== -1) {
+              auctions[idx].teams = JSON.parse(JSON.stringify(teams));
+              auctions[idx].status = status;
+              DB.saveAuctions(auctions);
+              currentAuction.teams = teams;
+            }
+          }
+
+          // ==================== RESULTS ====================
+          function renderResults(auction, liveTeams = null) {
+            const aTeams = liveTeams || auction.teams;
+            document.getElementById('results-subtitle').textContent =
+              `${auction.name} · ${aTeams.length} teams · ${auction.players.length} players`;
+
+            const grid = document.getElementById('results-grid');
+
+            grid.innerHTML = aTeams.map((t, i) => {
+              const auctionedPlayers = t.players.filter(p => !p.retained);
+              const spent = t.spent || auctionedPlayers.reduce((s, p) => s + (p.price || 0), 0);
+              return `
       <div class="result-team-card" onclick="showTeamDetail(${i}, '${(liveTeams ? 'live' : auction.id)}')" data-team="${i}">
         <div class="result-team-header">
           <div class="result-team-logo">
@@ -3719,37 +3835,41 @@
         </div>
         <div class="result-team-body">
           ${t.players.slice(0, 5).map(p => `
-            <div class="result-player-item">
-              <div>
-                <span class="name">${p.name}</span>
+            <div class="result-player-item" style="display:flex;align-items:center;padding:4px 0;">
+              <div class="player-avatar-sm">
+                ${p.photo ? `<img src="${p.photo}">` : '🧑'}
+              </div>
+              <div style="margin-left:8px;flex:1;">
+                <span class="name" style="font-size:0.9rem;">#${p.sno || '—'} ${p.name}</span>
                 ${p.retained ? '<span class="retained-tag" style="margin-left:6px;">RETAINED</span>' : ''}
                 <div style="font-size:0.75rem;color:var(--text-muted);">${p.role}</div>
               </div>
-              <span class="price">${p.retained ? 'Retained' : `₹${p.price?.toFixed(2) || '0'}Cr`}</span>
+              <span class="price" style="font-size:0.85rem;">${p.retained ? 'Retained' : `₹${p.price?.toFixed(2) || '0'}Cr`}</span>
             </div>
+
           `).join('')}
           ${t.players.length > 5 ? `<div style="text-align:center;color:var(--neon-cyan);font-size:0.8rem;padding:8px;">+${t.players.length - 5} more players →</div>` : ''}
           ${t.players.length === 0 ? '<div class="empty-state" style="padding:20px;"><p>No players acquired</p></div>' : ''}
         </div>
       </div>
     `;
-      }).join('');
-    }
+            }).join('');
+          }
 
-    let resultsTeamsCache = [];
+          let resultsTeamsCache = [];
 
-    function showTeamDetail(teamIdx, source) {
-      let t;
-      if (source === 'live') {
-        t = teams[teamIdx];
-      } else {
-        const auction = DB.auctions().find(a => a.id === source);
-        t = auction ? auction.teams[teamIdx] : null;
-      }
-      if (!t) return;
+          function showTeamDetail(teamIdx, source) {
+            let t;
+            if (source === 'live') {
+              t = teams[teamIdx];
+            } else {
+              const auction = DB.auctions().find(a => a.id === source);
+              t = auction ? auction.teams[teamIdx] : null;
+            }
+            if (!t) return;
 
-      const header = document.getElementById('team-detail-header');
-      header.innerHTML = `
+            const header = document.getElementById('team-detail-header');
+            header.innerHTML = `
     <div class="team-detail-logo">
       ${t.logo ? `<img src="${t.logo}" alt="${t.name}">` : (t.emoji || '🏏')}
     </div>
@@ -3762,13 +3882,13 @@
     </div>
   `;
 
-      const players = document.getElementById('team-detail-players');
-      const roleClass = { 'Batsman': 'role-bat', 'Bowler': 'role-bowl', 'All-Rounder': 'role-all', 'Wicket-Keeper': 'role-wk' };
+            const players = document.getElementById('team-detail-players');
+            const roleClass = { 'Batsman': 'role-bat', 'Bowler': 'role-bowl', 'All-Rounder': 'role-all', 'Wicket-Keeper': 'role-wk' };
 
-      if (t.players.length === 0) {
-        players.innerHTML = '<div class="empty-state"><div class="icon">👥</div><p>No players acquired</p></div>';
-      } else {
-        players.innerHTML = `
+            if (t.players.length === 0) {
+              players.innerHTML = '<div class="empty-state"><div class="icon">👥</div><p>No players acquired</p></div>';
+            } else {
+              players.innerHTML = `
       <div style="font-size:0.72rem;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">
         SQUAD — ${t.players.length} Players
       </div>
@@ -3778,9 +3898,10 @@
             ${p.photo ? `<img src="${p.photo}" alt="${p.name}">` : '🏏'}
           </div>
           <div class="player-detail-info">
-            <h4>${p.name} ${p.retained ? '<span class="retained-tag">RETAINED</span>' : ''}</h4>
+            <h4 style="font-size:0.95rem;">#${p.sno || '—'} ${p.name} ${p.retained ? '<span class="retained-tag">RETAINED</span>' : ''}</h4>
             <p><span class="role-badge ${roleClass[p.role] || 'role-bat'}" style="font-size:0.68rem;">${p.role}</span> · Age ${p.age}</p>
           </div>
+
           <div style="text-align:right;">
             <div style="font-family:'Orbitron',monospace;font-size:0.85rem;color:var(--neon-green);">
               ${p.retained ? '🔒' : `₹${p.price?.toFixed(2) || '0'}Cr`}
@@ -3790,72 +3911,92 @@
         </div>
       `).join('')}
     `;
-      }
+            }
 
-      openModal('team-detail-modal');
-    }
+            openModal('team-detail-modal');
+          }
 
-    // ==================== MODAL HELPERS ====================
-    function openModal(id) { document.getElementById(id).classList.add('open'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+          // ==================== MODAL HELPERS ====================
+          function openModal(id) { document.getElementById(id).classList.add('open'); }
+          function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-    document.querySelectorAll('.modal-overlay').forEach(overlay => {
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) overlay.classList.remove('open');
-      });
-    });
+          document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+              if (e.target === overlay) overlay.classList.remove('open');
+            });
+          });
 
-    // ==================== TOAST ====================
-    function showToast(msg, type = 'info') {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = 'toast show ' + type;
-      setTimeout(() => t.classList.remove('show'), 3000);
-    }
+          // ==================== TOAST ====================
+          let toastTimeout;
+          function showToast(msg, type = 'info') {
+            const t = document.getElementById('toast');
+            clearTimeout(toastTimeout);
+            
+            // Standardize types
+            if (msg.includes('💰')) type = 'gold';
+            if (msg.includes('UNSOLD')) type = 'error';
+            if (msg.includes('SOLD')) type = 'success';
+            
+            t.textContent = msg;
+            t.className = 'toast show ' + type;
+            toastTimeout = setTimeout(() => t.classList.remove('show'), 3000);
+          }
 
-    // ==================== LIVE SYNC ====================
-    function syncLiveState(event = 'bid') {
-      if (!currentAuction || !auctionState.auctionStarted) return;
 
-      const player = auctionState.players[auctionState.currentIdx] || null;
-      const state = {
-        auctionId: currentAuction.id,
-        auctionName: currentAuction.name,
-        sponsors: currentAuction.sponsors || [],
-        player: player ? {
-          name: player.name,
-          role: player.role,
-          age: player.age,
-          base: player.base,
-          photo: player.photo
-        } : null,
-        currentBid: auctionState.currentBid,
-        currentBidder: auctionState.currentBidder !== null ? teams[auctionState.currentBidder].name : null,
-        bidderLogo: auctionState.currentBidder !== null ? teams[auctionState.currentBidder].logo : null,
-        countdown: countdownVal,
-        soldCount: auctionState.soldCount,
-        unsoldCount: auctionState.unsoldCount,
-        remaining: auctionState.players.length - auctionState.currentIdx - 1,
-        total: auctionState.players.length,
-        event: event, // 'bid', 'sold', 'unsold', 'start', 'finished'
-        timestamp: Date.now(),
-        teams: event === 'finished' ? teams : null
-      };
+          // ==================== LIVE SYNC ====================
+          let lastSyncTime = 0;
+          function syncLiveState(event = 'bid') {
+            if (!currentAuction) return;
+            // Only block if not started AND not finished
+            if (!auctionState.auctionStarted && event !== 'finished') return;
+            
+            // Performance: Only sync timer every second, but don't re-sync full state unless needed
 
-      localStorage.setItem('ipa_live_sync', JSON.stringify(state));
-    }
+            const now = Date.now();
+            if (event === 'timer' && now - lastSyncTime < 900) return; 
 
-    // ==================== INIT ====================
-    (function init() {
-      if (currentUser) {
-        updateNavUser();
-        loadAuctions();
-        showScreen('dashboard-screen');
-      } else {
-        showScreen('login-screen');
-      }
-    })();
-  </script>
+            const player = auctionState.players[auctionState.currentIdx] || null;
+            const state = {
+              auctionId: currentAuction.id,
+              auctionName: currentAuction.name,
+              sponsors: currentAuction.sponsors || [],
+              player: player ? {
+                name: player.name,
+                role: player.role,
+                age: player.age,
+                base: player.base,
+                photo: player.photo,
+                sno: player.sno
+              } : null,
+              currentBid: auctionState.currentBid,
+              currentBidder: auctionState.currentBidder !== null ? teams[auctionState.currentBidder].name : null,
+              bidderLogo: auctionState.currentBidder !== null ? teams[auctionState.currentBidder].logo : null,
+              countdown: countdownVal,
+              soldCount: auctionState.soldCount,
+              unsoldCount: auctionState.unsoldCount,
+              remaining: auctionState.players.length - auctionState.currentIdx - 1,
+              total: auctionState.players.length,
+              event: event, // 'bid', 'sold', 'unsold', 'start', 'finished', 'timer'
+              timestamp: now,
+              teams: (event === 'finished' || event === 'sold' || event === 'unsold') ? teams : null
+            };
+
+            localStorage.setItem('ipa_live_sync', JSON.stringify(state));
+            lastSyncTime = now;
+          }
+
+
+          // ==================== INIT ====================
+          (function init() {
+            if (currentUser) {
+              updateNavUser();
+              loadAuctions();
+              showScreen('dashboard-screen');
+            } else {
+              showScreen('login-screen');
+            }
+          })();
+        </script>
 </body>
 
 </html>
