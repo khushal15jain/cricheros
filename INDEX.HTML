@@ -3325,7 +3325,10 @@
             document.getElementById('sold-btn').style.display = 'none';
 
             showScreen('auction-screen');
+            // Initial Sync for Broadcast (Sponsors + Not Started State)
+            syncLiveState('init');
           }
+
 
           function updatePremiumSponsor() {
             if (!currentAuction || !currentAuction.sponsors) return;
@@ -3669,7 +3672,9 @@
               if (!checkAuctionCompletion()) {
                 syncLiveState('waiting');
               }
-            }, 2500);
+            }, 1000); // Shortened to 1s as requested for fast control
+
+
 
 
             // Sync
@@ -3722,7 +3727,9 @@
               if (!checkAuctionCompletion()) {
                 syncLiveState('waiting');
               }
-            }, 2800);
+            }, 1000); // 1s delay for fast control
+
+
 
 
             updateAuctionInDB();
@@ -3948,7 +3955,8 @@
           function syncLiveState(event = 'bid') {
             if (!currentAuction) return;
             // Only block if not started AND not finished
-            if (!auctionState.auctionStarted && event !== 'finished') return;
+            if (!auctionState.auctionStarted && event !== 'finished' && event !== 'init' && event !== 'waiting') return;
+
             
             // Performance: Only sync timer every second, but don't re-sync full state unless needed
 

@@ -192,13 +192,18 @@
 
         /* Footer */
         .broadcast-footer {
-            padding: 20px 40px;
-            background: rgba(0, 0, 0, 0.8);
-            border-top: 1px solid var(--border);
+            padding: 25px 50px;
+            background: rgba(0, 0, 0, 0.98);
+            border-top: 3px solid var(--neon-gold);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: space-between; /* Sponsors left, Stats right */
+            align-items: flex-end;
+            min-height: 160px;
+            position: relative;
+            z-index: 9000; /* stays above overlays */
+            box-shadow: 0 -25px 50px rgba(0,0,0,0.9);
         }
+
 
         .sponsor-list {
             display: flex;
@@ -206,18 +211,57 @@
             gap: 40px;
             align-items: center;
             flex-wrap: nowrap;
+            justify-content: flex-start;
         }
+
+        .stats-grid {
+            display: flex;
+            gap: 40px;
+            align-items: flex-end;
+            padding-bottom: 10px;
+        }
+
+        .stat-item {
+            text-align: right;
+            padding: 0 15px;
+            border-right: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .stat-item:last-child {
+            border-right: none;
+            padding-right: 0;
+        }
+
+        .stat-lbl {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-val {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            font-weight: 900;
+            color: #fff;
+        }
+
+
 
         .sponsor-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 8px;
+            flex-shrink: 0;
         }
 
+
         .sponsor-item img {
-            max-height: 100px;
-            max-width: 250px;
+            max-height: 80px;
+            width: auto;
             object-fit: contain;
             filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
             animation: logo-glow 3s infinite alternate;
@@ -486,6 +530,49 @@
             margin-bottom: 5px;
         }
 
+        @media (max-width: 992px) {
+            .broadcast-footer {
+                flex-direction: column;
+                gap: 25px;
+                padding: 30px 20px;
+                min-height: auto;
+                align-items: center;
+                text-align: center;
+            }
+
+            .sponsor-list {
+                justify-content: center;
+                gap: 30px;
+            }
+
+            .stats-grid {
+                justify-content: center;
+                width: 100%;
+                gap: 20px;
+                padding-top: 20px;
+                border-top: 1px solid rgba(255, 215, 0, 0.1);
+            }
+
+            .stat-item {
+                text-align: center;
+                border: none;
+                padding: 0 10px;
+            }
+
+            .stat-val {
+                font-size: 1.5rem;
+            }
+            
+            .broadcast-main {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .waiting-screen {
+                bottom: 250px; /* Adjust for larger mobile footer */
+            }
+        }
+
         @media (max-width: 768px) {
             .results-title {
                 font-size: 2rem;
@@ -495,6 +582,7 @@
                 grid-template-columns: 1fr;
             }
         }
+
 
         /* Unified Toast System */
         .toast {
@@ -535,11 +623,23 @@
 <body>
 
     <div class="broadcast-container">
-        <!-- Waiting State -->
-        <div id="wait-overlay"
-            style="position:fixed; inset:0; background:var(--bg-dark); z-index:200; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px;">
-            <div class="logo" style="font-size:3rem;">S7l <span>AUCTION</span></div>
-            <div style="font-family:'Rajdhani'; color:var(--neon-cyan); letter-spacing:4px;">WAITING FOR LIVE DATA...
+        <div id="waiting-screen"
+            style="position:absolute; inset:0; bottom:150px; background:var(--bg-dark); z-index:200; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:30px; border-bottom:1px solid var(--border);">
+
+            <div class="logo" style="font-size:3.5rem; animation: pulse 2s infinite;">S7L <span>AUCTION</span></div>
+            <div style="text-align:center;">
+                <div
+                    style="font-family:'Orbitron'; color:var(--neon-gold); font-size:2.8rem; font-weight:900; letter-spacing:10px; text-shadow: 0 0 30px rgba(255,215,0,0.3);">
+                    WAITING FOR NEXT PLAYER...</div>
+                <div
+                    style="font-family:'Rajdhani'; color:var(--neon-cyan); font-size:1.4rem; letter-spacing:5px; margin-top:20px; font-weight:600; opacity:0.9;">
+                    THE NEXT ROUND WILL BEGIN SHORTLY</div>
+            </div>
+            <div class="loading-bar-container"
+                style="width:400px; height:8px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden; margin-top:10px; border:1px solid rgba(255,215,0,0.2);">
+                <div class="loading-bar-fill"
+                    style="width:100%; height:100%; background:var(--neon-gold); animation: loading-slide 3s infinite linear;">
+                </div>
             </div>
         </div>
 
@@ -558,32 +658,7 @@
         </div>
 
 
-        <!-- Next Player Waiting Screen -->
-        <div id="next-player-overlay"
-            style="position:fixed; inset:0; background:rgba(2, 4, 8, 0.95); z-index:150; display:none; flex-direction:column; align-items:center; justify-content:center; gap:30px; backdrop-filter:blur(20px);">
-            <div class="logo" style="font-size:3rem; animation: pulse 2s infinite;">S7L <span>AUCTION</span></div>
-            <div style="text-align:center;">
-                <div
-                    style="font-family:'Orbitron'; color:var(--neon-gold); font-size:2.5rem; font-weight:900; letter-spacing:8px;">
-                    NEXT PLAYER</div>
-                <div
-                    style="font-family:'Rajdhani'; color:var(--neon-cyan); font-size:1.2rem; letter-spacing:4px; margin-top:10px;">
-                    PREPARING FOR NEXT ROUND...</div>
-            </div>
-            <div class="loading-bar-container"
-                style="width:300px; height:4px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden; margin-top:20px;">
-                <div class="loading-bar-fill"
-                    style="width:100%; height:100%; background:var(--neon-gold); animation: loading-slide 3s infinite linear;">
-                </div>
-            </div>
-            
-            <!-- Sponsor Logos in Waiting Overlay -->
-            <div style="margin-top:60px; text-align:center;">
-                <div style="font-family:'Rajdhani'; color:var(--text-muted); font-size:0.8rem; letter-spacing:5px; margin-bottom:20px;">
-                    OFFICIAL PARTNERS</div>
-                <div class="sponsor-list" id="next-player-sponsors" style="justify-content:center;"></div>
-            </div>
-        </div>
+
 
 
         <style>
@@ -683,13 +758,14 @@
                 </div>
                 <div class="stat-item">
                     <div class="stat-lbl">Sold</div>
-                    <div class="stat-val" id="sold-players" style="color:var(--neon-gold)">0</div>
+                    <div class="stat-val" id="sold-players" style="color:var(--neon-green)">0</div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-lbl">Total</div>
+                <div class="stat-item" style="border:none;">
+                    <div class="stat-lbl">Total Pool</div>
                     <div class="stat-val" id="total-players" style="color:var(--neon-gold)">0</div>
                 </div>
             </div>
+
         </footer>
     </div>
 
@@ -698,11 +774,11 @@
 
         <script>
         const ui = {
-            wait: document.getElementById('wait-overlay'),
-            nextPlayerOverlay: document.getElementById('next-player-overlay'),
+            waitingScreen: document.getElementById('waiting-screen'),
             status: document.getElementById('status-overlay'),
             statusText: document.getElementById('status-text'),
             playerName: document.getElementById('player-name'),
+
             playerSno: document.getElementById('player-sno-tag'),
             playerMeta: document.getElementById('player-meta'),
             playerPhoto: document.getElementById('player-photo'),
@@ -760,7 +836,43 @@
                 return;
             }
 
+            // Sponsors (Always update if present)
+            if (state.sponsors && state.sponsors.length > 0) {
+                const labels = ['CUP SPONSOR', 'AUCTION SPONSOR', 'LED SPONSOR'];
+                const sponsorHtml = state.sponsors.map((s, idx) => {
+                    if (!s) return '';
+                    return `
+                     <div class="sponsor-item">
+                       <span class="sponsor-role-tag">${labels[idx] || 'ASSOCIATE'}</span>
+                       <img src="${s}" alt="Sponsor">
+                     </div>
+                   `;
+                }).join('');
+                
+                ui.footerSponsors.innerHTML = sponsorHtml;
+                ui.mobileSponsors.innerHTML = sponsorHtml;
 
+            }
+
+            // Auction Status Logic
+            const isWaiting = state.event === 'init' || state.event === 'waiting' || !state.player;
+            
+            if (isWaiting) {
+                ui.waitingScreen.style.display = 'flex';
+                ui.status.style.display = 'none';
+                
+                // Security Blank: Clear all player fields to prevent stale data
+                ui.playerName.textContent = 'READY...';
+                ui.playerSno.textContent = 'S.No: —';
+                ui.playerMeta.textContent = 'WAITING FOR NEXT PLAYER';
+                ui.playerPhoto.textContent = '🏏';
+                ui.currentBid.textContent = '₹ 0.00 Cr';
+                ui.bidderName.textContent = 'NO BIDS';
+                ui.timer.textContent = '—';
+                return; // Stop heavy UI logic if in waiting state
+            } else {
+                ui.waitingScreen.style.display = 'none';
+            }
 
             // Handle Toast Events from Admin
             const eventId = state.event + '_' + state.timestamp;
@@ -782,16 +894,6 @@
                 return;
             }
 
-            // Handle Waiting for next player
-            if (state.event === 'waiting') {
-                ui.nextPlayerOverlay.style.display = 'flex';
-                ui.wait.style.display = 'none';
-                ui.status.style.display = 'none';
-            } else {
-                ui.nextPlayerOverlay.style.display = 'none';
-                ui.wait.style.display = 'none';
-            }
-
             if (state.player) {
                 ui.playerName.textContent = state.player.name;
                 ui.playerSno.textContent = `S.No: ${state.player.sno || '—'}`;
@@ -810,28 +912,10 @@
             ui.remPlayers.textContent = state.remaining;
             ui.soldPlayers.textContent = state.soldCount;
 
-            // Sponsors
-            if (state.sponsors && state.sponsors.length > 0) {
-                const labels = ['CUP SPONSOR', 'AUCTION SPONSOR', 'LED SPONSOR'];
-                const sponsorHtml = state.sponsors.map((s, idx) => {
-                    if (!s) return '';
-                    return `
-                     <div class="sponsor-item">
-                       <span class="sponsor-role-tag">${labels[idx] || 'ASSOCIATE'}</span>
-                       <img src="${s}" alt="Sponsor">
-                     </div>
-                   `;
-                }).join('');
-                ui.footerSponsors.innerHTML = sponsorHtml;
-                ui.mobileSponsors.innerHTML = sponsorHtml;
-                if (ui.nextPlayerSponsors) ui.nextPlayerSponsors.innerHTML = sponsorHtml;
-            }
-
-
             // Sync color logic for timer
             ui.timer.style.color = state.countdown <= 10 ? 'var(--neon-red)' : 'var(--neon-gold)';
 
-            // Overlays
+            // Sold/Unsold Overlays
             if (state.event === 'sold') {
                 ui.status.style.display = 'flex';
                 ui.statusText.textContent = 'SOLD!';
@@ -844,6 +928,7 @@
                 ui.status.style.display = 'none';
             }
         }
+
 
 
 
