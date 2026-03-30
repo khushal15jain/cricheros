@@ -103,20 +103,36 @@
         /* Mobile Sponsor Bar (Visible only on Mobile at top) */
         .mobile-sponsor-bar {
             display: none;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-bottom: 2px solid var(--neon-gold);
+            padding: 10px 15px;
+            background: rgba(10, 16, 32, 0.95);
+            border-bottom: 1px solid var(--border);
             justify-content: center;
             align-items: center;
-            gap: 20px;
-            overflow-x: auto;
+            gap: 24px;
             flex-direction: row;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 100;
+        }
+
+        .mobile-sponsor-bar .sponsor-item {
+            flex-direction: row;
+            gap: 10px;
+        }
+
+        .mobile-sponsor-bar .sponsor-role-tag {
+            font-size: 0.5rem;
+            padding: 1px 4px;
         }
 
         .mobile-sponsor-bar img {
-            max-height: 50px;
-            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+            max-height: 36px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.2));
         }
+
+
 
         /* Main Content */
         .broadcast-main {
@@ -156,7 +172,8 @@
         .player-photo-wrap img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .player-name {
@@ -226,8 +243,8 @@
             flex-direction: row;
             gap: 40px;
             align-items: center;
-            flex-wrap: nowrap;
-            justify-content: flex-start;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .stats-grid {
@@ -649,6 +666,31 @@
             border-bottom: 2px solid var(--border);
             text-align: center;
             padding: 20px;
+            padding-top: 80px; /* Leave space for possible header */
+        }
+
+        .waiting-sponsors {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,215,0,0.1);
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 90%;
+        }
+
+        .waiting-sponsors img {
+            max-height: 40px;
+            filter: grayscale(0.2) brightness(1.1);
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .waiting-sponsors img:hover {
+            opacity: 1;
+            filter: grayscale(0) brightness(1.2);
         }
 
         .waiting-title {
@@ -703,6 +745,7 @@
                     style="width:100%; height:100%; background:var(--neon-gold); animation: loading-slide 3s infinite linear;">
                 </div>
             </div>
+            <div id="waiting-sponsors" class="waiting-sponsors"></div>
         </div>
 
         <div id="status-overlay" class="status-overlay">
@@ -853,8 +896,24 @@
             totalPlayers: document.getElementById('total-players'),
 
             remPlayers: document.getElementById('rem-players'),
-            soldPlayers: document.getElementById('sold-players')
+            soldPlayers: document.getElementById('sold-players'),
+            waitingSponsors: document.getElementById('waiting-sponsors')
         };
+
+        function handleImageError(el, type, fallback = '🏏') {
+            const parent = el.parentElement;
+            if (type === 'player') {
+                const roleEmoji = { 'Batsman': '🏏', 'Bowler': '🎳', 'All-Rounder': '⭐', 'Wicket-Keeper': '🧤' };
+                const playerRole = el.getAttribute('data-role') || 'Batsman';
+                parent.innerHTML = `<div style="font-size: 8rem; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">${roleEmoji[playerRole] || '🏏'}</div>`;
+            } else if (type === 'team') {
+                parent.innerHTML = `<div style="font-size: 2rem; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">${fallback}</div>`;
+            } else if (type === 'sponsor') {
+                el.style.display = 'none';
+            } else {
+                parent.innerHTML = fallback;
+            }
+        }
 
         // Extract Auction ID from URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -906,8 +965,7 @@
                     if (!s) return '';
                     return `
                      <div class="sponsor-item">
-                       <span class="sponsor-role-tag">${labels[idx] || 'ASSOCIATE'}</span>
-                       <img src="${s}" alt="Sponsor">
+                       <img src="${s}" alt="Sponsor" onerror="handleImageError(this, 'sponsor')">
                      </div>
                    `;
                 }).join('');
@@ -915,6 +973,7 @@
                 if (ui.footerSponsors.innerHTML !== sponsorHtml) {
                     ui.footerSponsors.innerHTML = sponsorHtml;
                     ui.mobileSponsors.innerHTML = sponsorHtml;
+                    if (ui.waitingSponsors) ui.waitingSponsors.innerHTML = sponsorHtml;
                 }
             }
 
@@ -964,7 +1023,7 @@
                 ui.playerSno.textContent = `S.No: ${state.player.sno || '—'}`;
                 ui.playerMeta.textContent = `${state.player.role.toUpperCase()} | BASE: ₹${state.player.base}Cr`;
                 if (state.player.photo) {
-                    ui.playerPhoto.innerHTML = `<img src="${state.player.photo}" alt="${state.player.name}">`;
+                    ui.playerPhoto.innerHTML = `<img src="${state.player.photo}" alt="${state.player.name}" data-role="${state.player.role}" onerror="handleImageError(this, 'player')">`;
                 } else {
                     ui.playerPhoto.textContent = '🏏';
                 }
@@ -1018,7 +1077,7 @@
             grid.innerHTML = teams.map(t => `
                 <div class="result-card">
                     <div class="rc-team-header">
-                        ${t.logo ? `<img class="rc-logo" src="${t.logo}">` : `<div style="font-size:2rem;">🏏</div>`}
+                        ${t.logo ? `<img class="rc-logo" src="${t.logo}" onerror="handleImageError(this, 'team', '${t.emoji || '🏏'}')">` : `<div style="font-size:2rem;">${t.emoji || '🏏'}</div>`}
                         <div>
                             <div class="rc-name">${t.name}</div>
                             <div class="rc-spent">₹${t.spent.toFixed(2)}Cr Spent</div>
@@ -1042,8 +1101,7 @@
                     if (!s) return '';
                     return `
                      <div class="rs-logo-wrap">
-                        <div class="rs-role">${labels[idx]}</div>
-                        <img class="rs-logo" src="${s}">
+                        <img class="rs-logo" src="${s}" onerror="handleImageError(this, 'sponsor')">
                      </div>
                    `;
                 }).join('');

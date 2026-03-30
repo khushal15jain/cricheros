@@ -973,7 +973,8 @@
       flex-direction: column;
       align-items: center;
       gap: 8px;
-      transition: opacity 0.5s ease;
+      transition: all 0.5s ease;
+      opacity: 1;
     }
 
     .premium-sponsor-card.fade-out {
@@ -1211,7 +1212,8 @@
     .player-avatar-big img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      background: rgba(0, 0, 0, 0.2);
     }
 
     .player-num {
@@ -2322,6 +2324,8 @@
           style="font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--text-muted);"></div>
       </div>
 
+      <div class="sponsor-section-header" id="header-sponsors"></div>
+
       <div class="scorebug">
         <div class="scorebug-item">
           <div class="val" id="sb-sold">0</div>
@@ -2966,6 +2970,21 @@
             reader.readAsDataURL(file);
           }
 
+          function handleImageError(el, type, fallback = '🏏') {
+            const parent = el.parentElement;
+            if (type === 'player') {
+              const roleEmoji = { 'Batsman': '🏏', 'Bowler': '🎳', 'All-Rounder': '⭐', 'Wicket-Keeper': '🧤' };
+              const playerRole = el.getAttribute('data-role') || 'Batsman';
+              parent.innerHTML = `<span style="font-size: 3.5rem; line-height: 1;">${roleEmoji[playerRole] || '🏏'}</span>`;
+            } else if (type === 'team') {
+              parent.innerHTML = `<span style="font-size: 2rem; line-height: 1;">${fallback}</span>`;
+            } else if (type === 'sponsor') {
+              parent.style.display = 'none'; // Hide broken sponsor logos in the header/panel
+            } else {
+              parent.innerHTML = fallback;
+            }
+          }
+
           function addTeam() {
             const name = document.getElementById('team-name').value.trim();
             const captain = document.getElementById('captain-name').value.trim();
@@ -3051,7 +3070,7 @@
             grid.innerHTML = teams.map((t, i) => `
     <div class="team-card">
       <div class="team-logo-display">
-        ${t.logo ? `<img src="${t.logo}" alt="${t.name}">` : t.emoji}
+        ${t.logo ? `<img src="${t.logo}" alt="${t.name}" onerror="handleImageError(this, 'team', '${t.emoji || '🏏'}')">` : t.emoji || '🏏'}
       </div>
       <h4>${t.name}</h4>
       <p>👑 ${t.captain || 'No captain'}</p>
@@ -3165,7 +3184,7 @@
       <td><span class="role-badge ${roleClass[p.role] || 'role-bat'}">${p.role}</span></td>
       <td>${p.age}</td>
       <td style="color:var(--neon-green);font-family:'Orbitron',monospace;">₹${p.base}Cr</td>
-      <td>${p.photo ? `<img src="${p.photo}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">` : '🧑'}</td>
+      <td>${p.photo ? `<img src="${p.photo}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" onerror="handleImageError(this, 'player')">` : '🧑'}</td>
       <td style="padding:12px;">
         <div style="display:flex;gap:12px;">
           <button class="btn-edit" style="padding:8px 14px;" onclick="editPlayer(${i})">✎ Edit</button>
@@ -3325,6 +3344,7 @@
             if (auction.sponsors && auction.sponsors.some(s => s)) {
               // Ensure card is visible before first update
               document.getElementById('premium-sponsor-card').style.display = 'flex';
+              updateHeaderSponsors();
               updatePremiumSponsor();
               sponsorToggleInterval = setInterval(updatePremiumSponsor, 5000);
             } else {
@@ -3346,6 +3366,23 @@
           }
 
 
+          function updateHeaderSponsors() {
+            const container = document.getElementById('header-sponsors');
+            if (!container || !currentAuction || !currentAuction.sponsors) return;
+            
+            const sponsors = currentAuction.sponsors.filter(s => s);
+            if (sponsors.length === 0) {
+              container.innerHTML = '';
+              return;
+            }
+
+            container.innerHTML = sponsors.map(s => `
+              <div class="sponsor-mini-card">
+                <img src="${s}" alt="Sponsor" onerror="handleImageError(this, 'sponsor')">
+              </div>
+            `).join('');
+          }
+
           function updatePremiumSponsor() {
             if (!currentAuction || !currentAuction.sponsors) return;
             const sponsors = currentAuction.sponsors;
@@ -3365,7 +3402,7 @@
               // Increment and show next
               currentSponsorIdx = (currentSponsorIdx + 1) % validIndices.length;
               const actualIdx = validIndices[currentSponsorIdx];
-              logo.innerHTML = `<img src="${sponsors[actualIdx]}" alt="Sponsor">`;
+              logo.innerHTML = `<img src="${sponsors[actualIdx]}" alt="Sponsor" onerror="handleImageError(this, 'sponsor')">`;
               if (tag) tag.textContent = labels[actualIdx] || 'SPONSORS';
 
               card.classList.remove('fade-out');
@@ -3383,7 +3420,7 @@
         <div class="team-bid-row ${isFull ? 'team-full' : ''}" id="team-bid-row-${i}">
           <div class="team-bid-left">
             <div class="team-mini-logo">
-              ${t.logo ? `<img src="${t.logo}" alt="${t.name}">` : t.emoji || '🏏'}
+              ${t.logo ? `<img src="${t.logo}" alt="${t.name}" onerror="handleImageError(this, 'team', '${t.emoji || '🏏'}')">` : t.emoji || '🏏'}
             </div>
             <div class="team-bid-info">
               <h4>${t.name} ${isFull ? '<span class="team-full-tag">FULL</span>' : ''}</h4>
@@ -3447,7 +3484,7 @@
             document.getElementById('stage-current-bid').textContent = `₹${player.base}Cr`;
 
             if (player.photo) {
-              document.getElementById('stage-avatar').innerHTML = `<img src="${player.photo}" alt="${player.name}">`;
+              document.getElementById('stage-avatar').innerHTML = `<img src="${player.photo}" alt="${player.name}" data-role="${player.role}" onerror="handleImageError(this, 'player')">`;
             } else {
               const roleEmoji = { 'Batsman': '🏏', 'Bowler': '🎳', 'All-Rounder': '⭐', 'Wicket-Keeper': '🧤' };
               document.getElementById('stage-avatar').textContent = roleEmoji[player.role] || '🏏';
