@@ -8,6 +8,22 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap"
         rel="stylesheet">
+    <!-- Firebase SDK v8.10.1 (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDHDyfrVE0JDWyJAQLm2N7ZO-x_DsaMkoM",
+            authDomain: "auction-sync-1bbd1.firebaseapp.com",
+            projectId: "auction-sync-1bbd1",
+            storageBucket: "auction-sync-1bbd1.firebasestorage.app",
+            messagingSenderId: "396678746492",
+            appId: "1:396678746492:web:1e6c5a0e60a899c60ad4f9",
+            measurementId: "G-BQVWXD4E2E"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auctionSyncRef = firebase.database().ref('auction_sync');
+    </script>
     <style>
         :root {
             --neon-gold: #FFD700;
@@ -617,20 +633,66 @@
         .toast.success { border-color: var(--neon-green); box-shadow: 0 0 25px rgba(0, 255, 136, 0.3); color: var(--neon-green); }
         .toast.error { border-color: var(--neon-red); box-shadow: 0 0 25px rgba(255, 51, 102, 0.3); color: var(--neon-red); }
         .toast.gold { border-color: var(--neon-gold); box-shadow: 0 0 25px rgba(255, 215, 0, 0.3); color: var(--neon-gold); }
+
+        /* Waiting Screen Styling */
+        .waiting-screen {
+            position: absolute;
+            inset: 0;
+            bottom: 160px;
+            background: var(--bg-dark);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            border-bottom: 2px solid var(--border);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .waiting-title {
+            font-family: 'Orbitron', monospace;
+            color: var(--neon-gold);
+            font-size: 2.8rem;
+            font-weight: 900;
+            letter-spacing: 10px;
+            text-shadow: 0 0 30px rgba(255,215,0,0.3);
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 900px) {
+            .waiting-screen {
+                bottom: 220px; /* More room for mobile footer */
+                gap: 20px;
+            }
+            .waiting-title {
+                font-size: 1.5rem;
+                letter-spacing: 4px;
+            }
+            .waiting-screen .logo {
+                font-size: 2rem !important;
+            }
+            .loading-bar-container {
+                width: 80% !important;
+                max-width: 300px;
+            }
+        }
+
+        /* Safe area support for mobile */
+        .broadcast-footer {
+            padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+        }
     </style>
 </head>
 
 <body>
 
     <div class="broadcast-container">
-        <div id="waiting-screen"
-            style="position:absolute; inset:0; bottom:150px; background:var(--bg-dark); z-index:200; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:30px; border-bottom:1px solid var(--border);">
-
+        <div id="waiting-screen" class="waiting-screen">
             <div class="logo" style="font-size:3.5rem; animation: pulse 2s infinite;">S7L <span>AUCTION</span></div>
             <div style="text-align:center;">
-                <div
-                    style="font-family:'Orbitron'; color:var(--neon-gold); font-size:2.8rem; font-weight:900; letter-spacing:10px; text-shadow: 0 0 30px rgba(255,215,0,0.3);">
-                    WAITING FOR NEXT PLAYER...</div>
+                <div class="waiting-title">WAITING FOR NEXT PLAYER...</div>
                 <div
                     style="font-family:'Rajdhani'; color:var(--neon-cyan); font-size:1.4rem; letter-spacing:5px; margin-top:20px; font-weight:600; opacity:0.9;">
                     THE NEXT ROUND WILL BEGIN SHORTLY</div>
@@ -814,6 +876,7 @@
 
         function updateUI(state) {
             if (!state) return;
+            console.log('Receiving Firebase Update:', state.event, state.player ? state.player.name : 'No Player');
 
             // PRIORITY: Hard Redirect if this specific auction is finished
             if (state.event === 'finished' && (!currentId || state.auctionId == currentId)) {
@@ -827,7 +890,7 @@
                         count--;
                         if (count <= 0) {
                             clearInterval(ival);
-                            window.location.href = 'results.html';
+                            window.location.href = 'results.html?id=' + (currentId || '');
                         } else {
                             if (timerEl) timerEl.textContent = `FINALIZING RESULTS IN ${count}...`;
                         }
@@ -836,7 +899,7 @@
                 return;
             }
 
-            // Sponsors (Always update if present)
+            // Sponsors (Only update if new sponsor data is provided to save performance)
             if (state.sponsors && state.sponsors.length > 0) {
                 const labels = ['CUP SPONSOR', 'AUCTION SPONSOR', 'LED SPONSOR'];
                 const sponsorHtml = state.sponsors.map((s, idx) => {
@@ -849,13 +912,15 @@
                    `;
                 }).join('');
                 
-                ui.footerSponsors.innerHTML = sponsorHtml;
-                ui.mobileSponsors.innerHTML = sponsorHtml;
-
+                if (ui.footerSponsors.innerHTML !== sponsorHtml) {
+                    ui.footerSponsors.innerHTML = sponsorHtml;
+                    ui.mobileSponsors.innerHTML = sponsorHtml;
+                }
             }
 
             // Auction Status Logic
-            const isWaiting = state.event === 'init' || state.event === 'waiting' || !state.player;
+            // If we have a player, we should NOT be in waiting mode regardless of the event name
+            const isWaiting = !state.player && (state.event === 'init' || state.event === 'waiting');
             
             if (isWaiting) {
                 ui.waitingScreen.style.display = 'flex';
@@ -990,14 +1055,35 @@
             }
         }
 
+        // Real-time Cloud Sync
+        if (currentId && typeof auctionSyncRef !== 'undefined') {
+            auctionSyncRef.child(currentId).on('value', (snapshot) => {
+                const state = snapshot.val();
+                if (state) {
+                    try { updateUI(state); } catch (err) { console.error('Update UI error:', err); }
+                }
+            });
+        }
+
+        // Fallback or Local Sync
         window.addEventListener('storage', (e) => {
             if (e.key === 'ipa_live_sync' && e.newValue) {
-                try { updateUI(JSON.parse(e.newValue)); } catch (err) { }
+                try { 
+                    const state = JSON.parse(e.newValue);
+                    if (!currentId || state.auctionId == currentId) {
+                        updateUI(state); 
+                    }
+                } catch (err) { }
             }
         });
 
         const initial = localStorage.getItem('ipa_live_sync');
-        if (initial) try { updateUI(JSON.parse(initial)); } catch (e) { }
+        if (initial) try { 
+            const state = JSON.parse(initial);
+            if (!currentId || state.auctionId == currentId) {
+                updateUI(state); 
+            }
+        } catch (e) { }
     </script>
 </body>
 

@@ -9,6 +9,22 @@
     href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap"
     rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <!-- Firebase SDK v8.10.1 (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDHDyfrVE0JDWyJAQLm2N7ZO-x_DsaMkoM",
+      authDomain: "auction-sync-1bbd1.firebaseapp.com",
+      projectId: "auction-sync-1bbd1",
+      storageBucket: "auction-sync-1bbd1.firebasestorage.app",
+      messagingSenderId: "396678746492",
+      appId: "1:396678746492:web:1e6c5a0e60a899c60ad4f9",
+      measurementId: "G-BQVWXD4E2E"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auctionSyncRef = firebase.database().ref('auction_sync');
+  </script>
   <style>
     :root {
       --neon-gold: #FFD700;
@@ -3648,8 +3664,6 @@
 
             // Update unsold tracker
             unsoldTracker[player.id] = (unsoldTracker[player.id] || 0) + 1;
-
-            // auctionState.unsoldPlayers.push(player); // REMOVED: Unsold stay unsold.
             auctionState.unsoldCount++;
 
             document.getElementById('sb-unsold').textContent = auctionState.unsoldCount;
@@ -3659,7 +3673,6 @@
             showSoldAnimation('UNSOLD', player.name, '—', false);
             showToast(`⚠️ ${player.name} goes UNSOLD!`, 'error');
 
-
             setTimeout(() => {
               hideSoldOverlay();
               document.getElementById('next-player-btn').textContent = '▶ NEXT PLAYER';
@@ -3668,14 +3681,10 @@
               document.getElementById('reset-bid-btn').style.display = 'none';
               document.getElementById('sold-btn').style.display = 'none';
               teams.forEach((_, i) => { const b = document.getElementById(`bid-btn-${i}`); if (b) b.disabled = true; });
-              // Set broadcast to waiting ONLY if not finished
               if (!checkAuctionCompletion()) {
                 syncLiveState('waiting');
               }
-            }, 1000); // Shortened to 1s as requested for fast control
-
-
-
+            }, 5000); 
 
             // Sync
             syncLiveState('unsold');
@@ -3714,7 +3723,6 @@
             showToast(`🏆 SOLD: ${player.name} to ${team.name}!`, 'success');
             launchConfetti();
 
-
             setTimeout(() => {
               hideSoldOverlay();
               document.getElementById('next-player-btn').textContent = '▶ NEXT PLAYER';
@@ -3723,18 +3731,12 @@
               document.getElementById('reset-bid-btn').style.display = 'none';
               document.getElementById('sold-btn').style.display = 'none';
               teams.forEach((_, i) => { const b = document.getElementById(`bid-btn-${i}`); if (b) b.disabled = true; });
-              // Set broadcast to waiting ONLY if not finished
               if (!checkAuctionCompletion()) {
                 syncLiveState('waiting');
               }
-            }, 1000); // 1s delay for fast control
-
-
-
+            }, 5000);
 
             updateAuctionInDB();
-
-            // Sync
             syncLiveState('sold');
           }
 
@@ -3793,6 +3795,9 @@
               timestamp: Date.now()
             };
             localStorage.setItem('ipa_final_results', JSON.stringify(finalData));
+            syncLiveState('finished');
+            
+            showToast('Final results generated! 🏆');
             localStorage.setItem('ipa_admin_mode', 'true');
             updateAuctionInDB('done');
 
@@ -3954,20 +3959,18 @@
           let lastSyncTime = 0;
           function syncLiveState(event = 'bid') {
             if (!currentAuction) return;
-            // Only block if not started AND not finished
-            if (!auctionState.auctionStarted && event !== 'finished' && event !== 'init' && event !== 'waiting') return;
-
-            
-            // Performance: Only sync timer every second, but don't re-sync full state unless needed
+            const allowedEvents = ['finished', 'init', 'waiting', 'next', 'start'];
+            if (!auctionState.auctionStarted && !allowedEvents.includes(event)) return;
 
             const now = Date.now();
-            if (event === 'timer' && now - lastSyncTime < 900) return; 
+            if (event === 'timer' && now - lastSyncTime < 950) return; 
 
             const player = auctionState.players[auctionState.currentIdx] || null;
             const state = {
               auctionId: currentAuction.id,
               auctionName: currentAuction.name,
-              sponsors: currentAuction.sponsors || [],
+              // PERFORMANCE: Only send sponsors on initial 'init' or 'next' to save data
+              sponsors: (event === 'init' || event === 'next') ? (currentAuction.sponsors || []) : null,
               player: player ? {
                 name: player.name,
                 role: player.role,
@@ -3984,12 +3987,17 @@
               unsoldCount: auctionState.unsoldCount,
               remaining: auctionState.players.length - auctionState.currentIdx - 1,
               total: auctionState.players.length,
-              event: event, // 'bid', 'sold', 'unsold', 'start', 'finished', 'timer'
+              event: event, 
               timestamp: now,
-              teams: (event === 'finished' || event === 'sold' || event === 'unsold') ? teams : null
+              // PERFORMANCE: Only send full teams on 'finished'. For 'sold', the status text is enough for live broadcast.
+              teams: (event === 'finished') ? teams : null
             };
 
             localStorage.setItem('ipa_live_sync', JSON.stringify(state));
+            if (typeof auctionSyncRef !== 'undefined') {
+              auctionSyncRef.child(currentAuction.id).set(state)
+                .catch((error) => console.error('Firebase Sync Failed:', error));
+            }
             lastSyncTime = now;
           }
 
