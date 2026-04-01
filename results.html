@@ -318,10 +318,17 @@
             }
 
             const grid = document.getElementById('results-grid');
-            grid.innerHTML = teams.map((t, idx) => `
+            if (data.auctionName) {
+                const subtitle = document.querySelector('.subtitle');
+                if (subtitle) subtitle.textContent = data.auctionName + ' — Final Standings';
+            }
+
+            grid.innerHTML = teams.map((t, idx) => {
+                const players = t.players || [];
+                return `
                 <div class="team-card" style="animation-delay: ${idx * 0.1}s">
                     <div class="team-header">
-                        ${t.logo ? `<img src="${t.logo}" class="team-logo">` : `<div style="font-size:3rem;">🏏</div>`}
+                        ${t.logo ? `<img src="${t.logo}" class="team-logo" onerror="this.src='https://placehold.co/70x70/080C16/FFD700?text=🏏'">` : `<div style="font-size:3rem;">🏏</div>`}
                         <div class="team-name">${t.name}</div>
                     </div>
                     <div class="team-stats">
@@ -331,24 +338,24 @@
                         </div>
                         <div class="stat-box">
                             <div class="stat-label">Players</div>
-                            <div class="stat-value">${t.players.length}</div>
+                            <div class="stat-value">${players.length}</div>
                         </div>
                         <div class="stat-box">
                             <div class="stat-label">Remaining</div>
-                            <div class="stat-value">₹${(t.purse - (t.spent || 0)).toFixed(2)}Cr</div>
+                            <div class="stat-value">₹${(parseFloat(t.purse || 0) - parseFloat(t.spent || 0)).toFixed(2)}Cr</div>
                         </div>
                     </div>
                     <div class="player-list">
-                        ${t.players.map(p => `
+                        ${players.map(p => `
                             <div class="player-item">
                                 <span class="player-name">#${p.sno || '—'} ${p.name}</span>
                                 <span class="player-price">₹${parseFloat(p.price || 0).toFixed(2)}Cr</span>
                             </div>
                         `).join('')}
-                        ${t.players.length === 0 ? '<div style="text-align:center; padding:20px; color:rgba(255,255,255,0.3);">No players bought</div>' : ''}
+                        ${players.length === 0 ? '<div style="text-align:center; padding:20px; color:rgba(255,255,255,0.3);">No players bought</div>' : ''}
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
 
             // Render Sponsors
             if (data.sponsors && data.sponsors.some(s => s !== null)) {
@@ -370,33 +377,59 @@
         }
 
         async function loadResults() {
+            const grid = document.getElementById('results-grid');
+            
+            // Show initial loading state
+            grid.innerHTML = `
+                <div id="loading-state" style="grid-column: 1/-1; text-align:center; padding: 100px 0;">
+                    <div style="font-size:3rem; margin-bottom:20px; animation: pulse 2s infinite;">⏳</div>
+                    <h2 style="font-family:'Orbitron'; color:var(--neon-cyan);">LOADING STANDINGS...</h2>
+                    <p style="margin-top:20px; color:rgba(255,255,255,0.5);">Connecting to secure server...</p>
+                </div>
+            `;
+
+            let dataFound = false;
+
             // First check Firebase if ID is present
             if (currentId && typeof auctionSyncRef !== 'undefined') {
                 auctionSyncRef.child(currentId).once('value', (snapshot) => {
                     const state = snapshot.val();
-                    if (state && state.event === 'finished') {
+                    // Relaxed check: Render if teams are present, regardless of 'finished' event
+                    if (state && state.teams) {
+                        dataFound = true;
                         renderResults(state);
-                        return;
                     }
                 });
             }
 
-            // Fallback to local storage (existing logic)
-            const dataRaw = localStorage.getItem('ipa_final_results');
-            if (dataRaw) {
-                try {
-                    renderResults(JSON.parse(dataRaw));
-                } catch (e) {
-                    console.error("Local storage parse error:", e);
+            // Small delay to allow Firebase to respond before showing 'No Results'
+            setTimeout(() => {
+                if (dataFound) return;
+
+                // Fallback to local storage (existing logic)
+                const dataRaw = localStorage.getItem('ipa_final_results');
+                if (dataRaw) {
+                    try {
+                        const parsed = JSON.parse(dataRaw);
+                        if (parsed && parsed.teams) {
+                            renderResults(parsed);
+                            return;
+                        }
+                    } catch (e) {
+                        console.error("Local storage parse error:", e);
+                    }
                 }
-            } else {
-                document.getElementById('results-grid').innerHTML = `
-                    <div style="grid-column: 1/-1; text-align:center; padding: 100px 0;">
-                        <h2 style="font-family:'Orbitron'; color:var(--neon-red);">NO RESULTS FOUND</h2>
-                        <p style="margin-top:20px; color:rgba(255,255,255,0.5);">Waiting for the auction to finalize... (Try refreshing in 5 seconds)</p>
-                    </div>
-                `;
-            }
+                
+                // If still no data after a reasonable wait
+                if (grid.querySelector('#loading-state')) {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align:center; padding: 100px 0;">
+                            <h2 style="font-family:'Orbitron'; color:var(--neon-red);">NO RESULTS FOUND</h2>
+                            <p style="margin-top:20px; color:rgba(255,255,255,0.5);">Waiting for the auction to finalize... (Try refreshing in 5 seconds)</p>
+                        </div>
+                    `;
+                }
+            }, 2000); 
         }
 
         window.onload = loadResults;

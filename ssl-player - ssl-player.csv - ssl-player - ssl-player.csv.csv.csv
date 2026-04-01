@@ -1,38 +1,38 @@
 name,role,age,base_price,nationality,image_filename
 Sameep jain,All rounder,25,1,indian,player/sameep.jpg
 Shreyans jain,"Batsman, WK",31,1,indian,player/shreyans.jpg
-NIKHIL JAIN,All rounder,36,1,indian,player/nikhil.jpg
+,,,,,
 Jainam Bafna,All rounder,22,1,indian,player/jainam.jpg
 Kalp Jain,All rounder,17,1,indian,player/kalp.jpg
-Himansh jain,All rounder,33,1,indian,player/himansh.jpg
+,,,,,
 Rochek Jain,"Batsman, WK",32,1,indian,player/rochek.jpg
 Hardik jain,"Batsman, Bowler",31,1,indian,player/hardik.jpg
-Kushal,All rounder,25,1,indian,player/kushal1.jpg
-Gomsi Jain,All rounder,22,1,indian,player/gomsi.jpg
+,,,,,
+,,,,,
 Ayush Jain,All rounder,22,1,indian,player/ayush.jpg
 Mishal,All rounder,37,1,indian,player/mishal.jpg
 Meeth,All rounder,25,1,indian,player/mmeeth.jpg
 Jeet jain,All rounder,24,1,indian,player/jeet.jpg
 Rithik jain,"Batsman, Bowler",26,1,indian,player/rithik.jpg
-Kashish,All rounder,33,1,indian,player/kashish.jpg
+,,,,,
 Khush,All rounder,19,1,indian,player/khush.jpg
 Nishant jain,All rounder,19,1,indian,player/nishant.jpg
 Rydham jain,All rounder,21,1,indian,player/rydham.jpg
 Moksh,Batsman,25,1,indian,player/moksh.jpg
 Harsh jain,All rounder,23,1,indian,player/harsh.jpg
-Karan Luniya,All rounder,23,1,indian,player/karan.jpg
+,,,,,
 Neel V Jain,All rounder,24,1,indian,player/neel.jpg
 Nivil jain,All rounder,35,1,indian,player/nivil.jpg
 Rushabh jain,All rounder,24,1,indian,player/rushab.jpg
 Romik,All rounder,30,1,indian,player/romik.jpg
-Lalith Purohit,Batsman,24,1,indian,player/lalith.jpg
-Jainil,All rounder,18,1,indian,player/jainil.jpg
-Mayank luniya,"Batsman, WK",23,1,indian,player/mayank.jpg
-Durgesh,All rounder,20,1,indian,player/durgesh.jpg
-Rahul,All rounder,36,1,indian,player/rahul.jpg
+,,,,,
+,,,,,
+,,,,,
+,,,,,
+,,,,,
 Akash jain,"Batsman, WK",32,1,indian,player/aaksh.jpg
 Jagidar,All rounder,23,1,indian,player/jagidhar.jpg
-Shaswath,All rounder,26,1,indian,player/shashwath.jpg
+,,,,,
 R.Vipul,All rounder,18,1,indian,player/rvipul.jpg
 Sahil Singh,All rounder,23,1,indian,player/sahil.jpg
 Kamal,All rounder,22,1,indian,player/kamal.jpg
@@ -46,17 +46,17 @@ Heet Jain,All rounder,18,1,indian,player/heet.jpg
 Lucky,All rounder,20,1,indian,player/lucky.jpg
 Ishan,All rounder,20,1,indian,player/ishan.jpg
 Nick,All rounder,20,1,indian,player/nick.jpg
-Yogesh,All rounder,19,1,indian,player/yogesh.jpg
+,,,,,
 DJ,All rounder,21,1,indian,player/dk.jpg
 Vishal Sanghvi,All rounder,20,1,indian,player/vishals.jpg
 Nilesh Gowani,All rounder,18,1,indian,player/nilesh.jpg
-Romi,All rounder,23,1,indian,player/abcd.jpg
+,,,,,
 Pakshal,All rounder,20,1,indian,player/pakshal.jpg
 Aksh,All rounder,23,1,indian,player/aksh.jpg
 Sanketh jain,All rounder,24,1,indian,player/sanketh.jpg
 Praveen,All rounder,36,1,indian,player/praveen.jpg
 Yash Ramani,All rounder,18,1,indian,player/yash.jpg
-Diyansh,All rounder,21,1,indian,player/diyansh.jpg
+,,,,,
 Baby Akash,All rounder,18,1,indian,player/akash.jpg
 Ansh,All rounder,20,1,indian,player/ansh.jpg
 Kushal Gajani,All rounder,18,1,indian,player/kushalgajani.jpg
@@ -72,9 +72,9 @@ Nishit Rathod,All rounder,18,1,indian,player/nishit.jpg
 Rohit,All rounder,20,1,indian,player/rohit1.jpg
 Jitu,All rounder,20,1,indian,player/jitu.jpg
 Vipul,All rounder,18,1,indian,player/vipul.jpg
-Gaurav,All rounder,18,1,indian,player/gaurav.jpg
+,,,,,
 Vishnu,All rounder,18,1,indian,player/vishnu.jpg
-Lalith prajapat,All rounder,18,1,indian,player/lalithpraja.jpg
+,,,,,
 Sailesh,All rounder,18,1,indian,player/sailesh.jpg
 Shubham,All rounder,18,1,indian,player/shubham.jpg
 Danish,All rounder,20,1,indian,player/danish.jpg
@@ -89,11 +89,12 @@ Vinit,All rounder,18,1,indian,player/vinit.jpg
 Pankaj,All rounder,18,1,indian,player/pankaj.jpg
 Vimal,All rounder,29,1,indian,player/vimal.jpg
 Daksh,All rounder,32,1,indian,player/daksh.jpg
-Chirag,All rounder,26,1,indian,player/chirag.jpg
+,,,,,
 Sandeep,All rounder,30,1,indian,player/sandeep.jpg
 Sarvan,All rounder,19,1,indian,player/sarvan1.jpg
-Donesh,All rounder,33,1,indian,player/donesh.jpg
-Surendra,All rounder,33,1,indian,player/surendra.jpg
+,,,,,
+,,,,,
 Sahil jain,All rounder,33,1,indian,player/sahil1.jpg
 Jash jain,All rounder,20,1,indian,player/jash.jpg
 Nishant jain,All rounder,20,1,indian,player/nishant1.jpg
+Krish,All rounder,21,1,indian,player/krish.jpg
